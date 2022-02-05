@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
 
+''' добавить время для выбора события, работа над полями ввода'''
 
 window = Tk()
 window.title("My Work")
