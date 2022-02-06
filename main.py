@@ -1,14 +1,17 @@
 from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
+from tkinter.ttk import Combobox
 
-''' добавить время для выбора события, работа над полями ввода'''
+''' работа над полями ввода'''
 
 window = Tk()
 window.title("My Work")
 window.geometry("1200x600")
 
 var_date = StringVar()
+var_hour = StringVar()
+var_minute = StringVar()
 var_topic = StringVar()
 var_project = StringVar()
 var_duration = StringVar()
@@ -18,15 +21,25 @@ var_vcs = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
 
+times_hour = [x for x in range(24)]
+times_minute = [x for x in range(0, 60, 15)]
 
-def write_meet(x, y, z):
+def hour_minute(x, y):
+    var_time = x + '-' + y
+    return var_time
+
+def write_meet(x, y, z, a):
     y=str(y)
-    f = open(y+'_'+z + '.txt', 'w')
+    f = open(y+'_'+a+'_'+z+'_'+'.txt', 'w')
     f.write(x)
     f.close()
 
 def save1():
     var_date = txt_date.get_date()
+    var_date=var_date.strftime('%m.%d.%Y')
+    print(var_date)
+    var_hour = txt_hour.get()
+    var_minute = txt_minute.get()
     var_topic = txt_topic.get()
     var_project = txt_project.get()
     var_duration = txt_duration.get()
@@ -36,22 +49,29 @@ def save1():
     var_meet_room = txt_meet_room.get()
     var_content = txt_content.get()
 
-    result1 =(f'{lbl_date["text"]}:{var_date}\n{lbl_topic["text"]}:{var_topic}\n{lbl_project["text"]}:{var_project}\n\
-{lbl_duration["text"]}:{var_duration}\n{lbl_contacts["text"]}:{var_contacts}\n{lbl_data_connect["text"]}:{var_data_connect}\n\
-{lbl_vcs["text"]}:{var_vcs}\n{lbl_meet_room["text"]}:{var_meet_room}\n{lbl_content["text"]}:{var_content}\n')
-    write_meet(result1, var_date, var_topic)
+    var_time = hour_minute(var_hour, var_minute)
+
+    result1 =(f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n{lbl_project["text"]}: {var_project}\n\
+{lbl_duration["text"]}: {var_duration}\n{lbl_contacts["text"]}: {var_contacts}\n{lbl_data_connect["text"]}: {var_data_connect}\n\
+{lbl_vcs["text"]}: {var_vcs}\n{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
+    write_meet(result1, var_date, var_topic, var_time)
     mb.showinfo("записалось", result1)
 
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
 lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yyyy')
+txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
 txt_date.grid(column=1, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
+txt_hour = Combobox(window, values=times_hour, width=5)
+txt_hour.grid(column=3, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+txt_minute = Combobox(window, values=times_minute, width=5)
+txt_minute.grid(column=4, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 lbl_topic = Label(window, text="2. Тема совещания", relief=GROOVE)
 lbl_topic.grid(column=0, row=2, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_topic = Entry(window, width=30, textvariable=var_topic)
 txt_topic.grid(column=1, row=2, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+
 
 lbl_project = Label(window, text="3. Проект", relief=GROOVE)
 lbl_project.grid(column=0, row=3, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -93,7 +113,5 @@ txt_content.grid(column=1, row=9, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 
-
-
-
 window.mainloop()
+
