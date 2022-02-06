@@ -37,7 +37,6 @@ def write_meet(x, y, z, a):
 def save1():
     var_date = txt_date.get_date()
     var_date=var_date.strftime('%m.%d.%Y')
-    print(var_date)
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
     var_topic = txt_topic.get()
