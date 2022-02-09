@@ -23,6 +23,7 @@ var_content = StringVar()
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
+duration = [x for x in range(1, 5)]
 
 def hour_minute(x, y):
     var_time = x + '-' + y
@@ -42,7 +43,7 @@ def save1():
     var_topic = txt_topic.get()
     var_project = txt_project.get()
     var_duration = txt_duration.get()
-    var_contacts = txt_duration.get()
+    var_contacts = txt_contacts.get()
     var_data_connect = txt_data_connect.get()
     var_vcs = txt_vcs.get()
     var_meet_room = txt_meet_room.get()
@@ -79,7 +80,7 @@ txt_project.grid(column=1, row=3, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 lbl_duration = Label(window, text="4. Продолжительность", relief=GROOVE)
 lbl_duration.grid(column=0, row=4, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_duration = Entry(window, width=30, textvariable=var_duration)
+txt_duration = Combobox(window, values=duration, width=5)
 txt_duration.grid(column=1, row=4, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 '''Добавить контакты организатора приславшего данные, контакты нашего организатора'''
