@@ -82,20 +82,29 @@ lbl_duration.grid(column=0, row=4, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_duration = Entry(window, width=30, textvariable=var_duration)
 txt_duration.grid(column=1, row=4, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
+'''Добавить контакты организатора приславшего данные, контакты нашего организатора'''
+
 lbl_contacts = Label(window, text="5. Контакты организатора", relief=GROOVE)
 lbl_contacts.grid(column=0, row=5, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_contacts = Entry(window, width=30, textvariable=var_contacts)
 txt_contacts.grid(column=1, row=5, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+
+'''переименовать данные на подключение гостевые'''
 
 lbl_data_connect = Label(window, text="6. Данные на покдлючение входные", relief=GROOVE)
 lbl_data_connect.grid(column=0, row=6, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_data_connect = Entry(window, width=30, textvariable=var_data_connect)
 txt_data_connect.grid(column=1, row=6, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
+'''сделать выбор радио баттон'''
+
 lbl_vcs = Label(window, text="7. Система ВКС", relief=GROOVE)
 lbl_vcs.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_vcs = Entry(window, width=30, textvariable=var_vcs)
 txt_vcs.grid(column=1, row=7, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+
+''' добавить поля нашего подключения к нашей системе ВКС, может быть добавить рядом с гостевыми приглашениями,
+Поля добавить отдельно сссылка, идентификатор, пароль для конференции'''
 
 lbl_meet_room = Label(window, text="8. Переговорные комнаты", relief=GROOVE)
 lbl_meet_room.grid(column=0, row=8, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
