@@ -121,5 +121,8 @@ txt_content.grid(column=1, row=9, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 
+
+window.event_add('<<Paste>>', '<Control-igrave>')
+window.event_add("<<Copy>>", "<Control-ntilde>")
 window.mainloop()
 
