@@ -18,11 +18,14 @@ var_duration = StringVar()
 var_name_org = StringVar()
 var_email = StringVar()
 var_telephone = StringVar()
-var_ip_address = StringVar()
+var_guest_address = StringVar()
+var_id_guest = StringVar()
+var_pass_guest = StringVar()
+var_link_guest = StringVar()
+var_ip_conf = StringVar()
 var_id_conf = StringVar()
 var_pass_conf = StringVar()
 var_link_conf = StringVar()
-var_ip_address1 = StringVar()
 # var_data_connect = StringVar()
 var_vcs = StringVar()
 var_meet_room = StringVar()
@@ -111,38 +114,39 @@ txt_telephone.grid(column=2, row=6, ipadx=5, ipady=5, padx=3, pady=3)
 
 '''переименовать данные на подключение входные и выходные добавить поля ссылка, идентификатор, пароль, IP адрес'''
 
-lbl_ip_address = Label(window, text="6. Подключение вх. IP", relief=GROOVE)
-lbl_ip_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_ip_address = Entry(window, width=30, textvariable=var_ip_address)
-txt_ip_address.grid(column=0, row=8, ipadx=5, ipady=5, padx=3, pady=3)
+lbl_guest_address = Label(window, text="6. Гостевое подключение IP", relief=GROOVE)
+lbl_guest_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+txt_guest_address = Entry(window, width=30, textvariable=var_guest_address)
+txt_guest_address.grid(column=0, row=8, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
 
-lbl_id_conf = Label(window, text="Идентификатор", relief=GROOVE)
-lbl_id_conf.grid(column=1, row=7, ipadx=5, ipady=5, padx=3, pady=3)
-txt_id_conf = Entry(window, width=30, textvariable=var_id_conf)
-txt_id_conf.grid(column=1, row=8, ipadx=5, ipady=5, padx=3, pady=3)
+lbl_id_guest = Label(window, text="Идентификатор", relief=GROOVE)
+lbl_id_guest.grid(column=1, row=7, ipadx=5, ipady=5, padx=3, pady=3)
+txt_id_guest = Entry(window, width=30, textvariable=var_id_guest)
+txt_id_guest.grid(column=1, row=8, ipadx=5, ipady=5, padx=3, pady=3)
 
-lbl_pass_conf = Label(window, text="Пароль", relief=GROOVE)
-lbl_pass_conf.grid(column=2, row=7, ipadx=5, ipady=5, padx=3, pady=3)
-txt_pass_conf = Entry(window, width=30, textvariable=var_pass_conf)
-txt_pass_conf.grid(column=2, row=8, ipadx=5, ipady=5, padx=3, pady=3)
+lbl_pass_guest = Label(window, text="Пароль", relief=GROOVE)
+lbl_pass_guest.grid(column=2, row=7, ipadx=5, ipady=5, padx=3, pady=3)
+txt_pass_guest = Entry(window, width=30, textvariable=var_pass_guest)
+txt_pass_guest.grid(column=2, row=8, ipadx=5, ipady=5, padx=3, pady=3)
 
-lbl_link_conf = Label(window, text="Ссылка подключения", relief=GROOVE)
-lbl_link_conf.grid(column=0, row=9, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-txt_link_conf = Entry(window, width=50, textvariable=var_link_conf)
-txt_link_conf.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
+lbl_link_guest = Label(window, text="Ссылка подключения", relief=GROOVE)
+lbl_link_guest.grid(column=0, row=9, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+txt_link_guest = Entry(window, width=50, textvariable=var_link_guest)
+txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
-'''сделать выбор радио баттон '''
 
 lbl_vcs = Label(window, text="7. Система ВКС", relief=GROOVE)
 lbl_vcs.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-#txt_vcs = Entry(window, width=30, textvariable=var_vcs)
-#txt_vcs.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-''' '''
+rb_yms = Radiobutton(window, text='YMS', value = 1)
+rb_yms.grid(column=1, row=10, ipadx=5, ipady=5, padx=3, pady=3)
+rb_zoom = Radiobutton(window, text='ZOOM', value = 2)
+rb_zoom.grid(column=2, row=10, ipadx=5, ipady=5, padx=3, pady=3)
 
-lbl_ip_address1 = Label(window, text="8. Подключение АО ОЭС", relief=GROOVE)
-lbl_ip_address1.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_ip_address1 = Entry(window, width=30, textvariable=var_ip_address1)
-txt_ip_address1.grid(column=0, row=12, ipadx=5, ipady=5, padx=3, pady=3)
+
+lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
+lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+txt_ip_conf = Entry(window, width=30, textvariable=var_ip_conf)
+txt_ip_conf.grid(column=0, row=12, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
 
 lbl_id_conf = Label(window, text="Идентификатор", relief=GROOVE)
 lbl_id_conf.grid(column=1, row=11, ipadx=5, ipady=5, padx=3, pady=3)
@@ -159,13 +163,19 @@ lbl_link_conf.grid(column=0, row=13, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
 txt_link_conf = Entry(window, width=50, textvariable=var_link_conf)
 txt_link_conf.grid(column=1, row=13, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
-
-'''Поля добавить отдельно сссылка, идентификатор, пароль для конференции'''
+'''сделать чек баттон выбора переговорных комнат'''
 
 lbl_meet_room = Label(window, text="8. Переговорные комнаты", relief=GROOVE)
 lbl_meet_room.grid(column=0, row=14, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_meet_room = Entry(window, width=30, textvariable=var_meet_room)
-txt_meet_room.grid(column=1, row=14, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+chb_meet_room2 = Checkbutton(window, text="С №2")
+chb_meet_room2.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+chb_meet_room3 = Checkbutton(window, text="С №3")
+chb_meet_room3.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, sticky=W)
+chb_meet_roomv = Checkbutton(window, text="VIP")
+chb_meet_roomv.grid(column=1, row=14)
+
+
+'''сделать радиобаттон'''
 
 lbl_content = Label(window, text="9. Демонстрация материалов", relief=GROOVE)
 lbl_content.grid(column=0, row=15, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
