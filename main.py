@@ -3,8 +3,6 @@ from tkinter import messagebox as mb
 from tkcalendar import DateEntry
 from tkinter.ttk import Combobox
 
-''' работа над полями ввода'''
-
 window = Tk()
 window.title("My Work")
 window.geometry("1200x600")
@@ -18,16 +16,16 @@ var_duration = StringVar()
 var_name_org = StringVar()
 var_email = StringVar()
 var_telephone = StringVar()
+var_contacr_org = StringVar()
 var_guest_address = StringVar()
 var_id_guest = StringVar()
 var_pass_guest = StringVar()
 var_link_guest = StringVar()
+var_vcs_system = StringVar()
 var_ip_conf = StringVar()
 var_id_conf = StringVar()
 var_pass_conf = StringVar()
 var_link_conf = StringVar()
-# var_data_connect = StringVar()
-var_vcs = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
 
@@ -35,20 +33,37 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
+#def vcs_change():
+    #if var_vcs.get() == 0
+        #return
 
+# функция данные организатора в одну строку
+def contacts_org(a,b,c):
+    var_contacr_org = str(a+'\t'+b+'\t'+c)
+    return var_contacr_org
+
+'''сделать форматом вывода H.323 и SIP отдельно для YMS и ZOOM'''
+# функция объединения данные подключения конференции
+def connect_change(a,b,c,d):
+    var_connect=str(a+'\t'+b+'\t'+c+'\n'+d)
+    return var_connect
+
+# функция вывода часы-минуты одной строкой
 def hour_minute(x, y):
     var_time = x + '-' + y
     return var_time
 
+# функция записи в файл всего совещания
 def write_meet(x, y, z, a):
     y=str(y)
     f = open(y+'_'+a+'_'+z+'_'+'.txt', 'w')
     f.write(x)
     f.close()
 
+# функция результирующей строки
 def save1():
     var_date = txt_date.get_date()
-    var_date=var_date.strftime('%m.%d.%Y')
+    var_date=var_date.strftime('%d.%m.%Y')
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
     var_topic = txt_topic.get()
@@ -57,17 +72,29 @@ def save1():
     var_name_org = txt_name_org.get()
     var_email = txt_email.get()
     var_telephone = txt_telephone.get()
-    var_data_connect = txt_data_connect.get()
-    var_vcs = txt_vcs.get()
+    var_contacr_org = contacts_org(var_name_org,var_email,var_telephone)
+    var_guest_address = txt_guest_address.get()
+    var_id_guest = txt_id_guest.get()
+    var_pass_guest = txt_pass_guest.get()
+    var_link_guest = txt_link_guest.get()
+    var_connect_guest = connect_change(var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
+    var_vcs_system = cb_vcs_system.get()
+    var_ip_conf = txt_ip_conf.get()
+    var_id_conf = txt_id_conf.get()
+    var_pass_conf = txt_pass_conf.get()
+    var_link_conf = txt_link_conf.get()
+    var_connect_conf = connect_change(var_ip_conf,var_id_conf,var_pass_conf,var_link_conf)
     var_meet_room = txt_meet_room.get()
-    var_content = txt_content.get()
-
+    var_content = cb_content.get()
     var_time = hour_minute(var_hour, var_minute)
 
-    result1 =(f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n{lbl_project["text"]}: {var_project}\n\
-{lbl_duration["text"]}: {var_duration}\n{lbl_name_org["text"]}: {var_name_org}\t{var_email}\t\
-{var_telephone}\n{lbl_data_connect["text"]}: {var_data_connect}\n\
-{lbl_vcs["text"]}: {var_vcs}\n{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
+    result1 =(f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
+              f'{lbl_project["text"]}: {var_project}\n{lbl_duration["text"]}: {var_duration} ч.\n'
+              f'{lbl_name_org["text"]}: {var_contacr_org}\n'
+              f'{lbl_guest_address["text"]}: {var_connect_guest}\n{lbl_vcs_system["text"]}: {var_vcs_system}\n'
+              f'{lbl_ip_conf["text"]}: {var_connect_conf}\n'
+              f'{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
+
     write_meet(result1, var_date, var_topic, var_time)
     mb.showinfo("записалось", result1)
 
@@ -85,7 +112,6 @@ lbl_topic = Label(window, text="2. Тема совещания", relief=GROOVE)
 lbl_topic.grid(column=0, row=2, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_topic = Entry(window, width=30, textvariable=var_topic)
 txt_topic.grid(column=1, row=2, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
 
 lbl_project = Label(window, text="3. Проект", relief=GROOVE)
 lbl_project.grid(column=0, row=3, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -112,8 +138,6 @@ lbl_telephone.grid(column=2, row=5, ipadx=5, ipady=5, padx=3, pady=3)
 txt_telephone = Entry(window, width=30, textvariable=var_telephone)
 txt_telephone.grid(column=2, row=6, ipadx=5, ipady=5, padx=3, pady=3)
 
-'''переименовать данные на подключение входные и выходные добавить поля ссылка, идентификатор, пароль, IP адрес'''
-
 lbl_guest_address = Label(window, text="6. Гостевое подключение IP", relief=GROOVE)
 lbl_guest_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_guest_address = Entry(window, width=30, textvariable=var_guest_address)
@@ -135,13 +159,12 @@ txt_link_guest = Entry(window, width=50, textvariable=var_link_guest)
 txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
 
-lbl_vcs = Label(window, text="7. Система ВКС", relief=GROOVE)
-lbl_vcs.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-rb_yms = Radiobutton(window, text='YMS', value = 1)
-rb_yms.grid(column=1, row=10, ipadx=5, ipady=5, padx=3, pady=3)
-rb_zoom = Radiobutton(window, text='ZOOM', value = 2)
-rb_zoom.grid(column=2, row=10, ipadx=5, ipady=5, padx=3, pady=3)
+lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
+lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+cb_vcs_system = Combobox(window, values=['YMS','ZOOM'], width=5)
+cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
+'''сделать подстановку из выбора уже готовых шаблонов'''
 
 lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
 lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -163,26 +186,15 @@ lbl_link_conf.grid(column=0, row=13, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
 txt_link_conf = Entry(window, width=50, textvariable=var_link_conf)
 txt_link_conf.grid(column=1, row=13, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
-'''сделать чек баттон выбора переговорных комнат'''
-
-lbl_meet_room = Label(window, text="8. Переговорные комнаты", relief=GROOVE)
+lbl_meet_room = Label(window, text="9. Переговорные комнаты", relief=GROOVE)
 lbl_meet_room.grid(column=0, row=14, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-chb_meet_room2 = Checkbutton(window, text="С №2")
-chb_meet_room2.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-chb_meet_room3 = Checkbutton(window, text="С №3")
-chb_meet_room3.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, sticky=W)
-chb_meet_roomv = Checkbutton(window, text="VIP")
-chb_meet_roomv.grid(column=1, row=14)
+txt_meet_room = Entry(window, width=50, textvariable=var_meet_room)
+txt_meet_room.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
-
-'''сделать радиобаттон'''
-
-lbl_content = Label(window, text="9. Демонстрация материалов", relief=GROOVE)
+lbl_content = Label(window, text="10. Демонстрация материалов", relief=GROOVE)
 lbl_content.grid(column=0, row=15, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_content = Entry(window, width=30, textvariable=var_content)
-txt_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-
+cb_content = Combobox(window, values=['ДА','НЕТ'], width=5)
+cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
