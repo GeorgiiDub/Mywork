@@ -42,7 +42,8 @@ def contacts_org(a,b,c):
     var_contacr_org = str(a+'\t'+b+'\t'+c)
     return var_contacr_org
 
-'''сделать форматом вывода H.323 и SIP отдельно для YMS и ZOOM'''
+'''сделать форматом вывода H.323 и SIP отдельно для YMS и ZOOM и добавить имена полей идентификатор совещания
+пароль ссылка подключения'''
 # функция объединения данные подключения конференции
 def connect_change(a,b,c,d):
     var_connect=str(a+'\t'+b+'\t'+c+'\n'+d)
