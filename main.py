@@ -36,7 +36,7 @@ duration = [x for x in range(1, 5)]
 #def vcs_change():
     #if var_vcs.get() == 0
         #return
-
+'''добавить в строку имена полей e-mail и телефон'''
 # функция данные организатора в одну строку
 def contacts_org(a,b,c):
     var_contacr_org = str(a+'\t'+b+'\t'+c)
