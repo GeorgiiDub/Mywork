@@ -16,7 +16,7 @@ var_duration = StringVar()
 var_name_org = StringVar()
 var_email = StringVar()
 var_telephone = StringVar()
-var_contacr_org = StringVar()
+var_contact_org = StringVar()
 var_guest_address = StringVar()
 var_id_guest = StringVar()
 var_pass_guest = StringVar()
@@ -26,6 +26,7 @@ var_ip_conf = StringVar()
 var_id_conf = StringVar()
 var_pass_conf = StringVar()
 var_link_conf = StringVar()
+var_zoom = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
 
@@ -33,20 +34,21 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
-#def vcs_change():
-    #if var_vcs.get() == 0
-        #return
-'''добавить в строку имена полей e-mail и телефон'''
+'''Сделать функцию отправки на электронную почту'''
+
 # функция данные организатора в одну строку
 def contacts_org(a,b,c):
-    var_contacr_org = str(a+'\t'+b+'\t'+c)
+    var_contacr_org = str(a+'\tэл.почта: '+b+'\tтелефон: '+c)
     return var_contacr_org
 
-'''сделать форматом вывода H.323 и SIP отдельно для YMS и ZOOM и добавить имена полей идентификатор совещания
-пароль ссылка подключения'''
-# функция объединения данные подключения конференции
-def connect_change(a,b,c,d):
-    var_connect=str(a+'\t'+b+'\t'+c+'\n'+d)
+# функция объединения данные подключения конференции и вывод H.323 и SIP
+def connect_change(a,b,c,d,e):
+    var_z = 0
+    if a == 'ZOOM':
+        var_z = str('SIP: '+c+'@zoomcrc.com')
+    else:
+        var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
+    var_connect=str('\n\tIP адрес: '+b+'\tИдентификатор: '+c+'\tПароль: '+d+'\n\tСсылка на подключение:\n\t'+e+'\n\t'+var_z)
     return var_connect
 
 # функция вывода часы-минуты одной строкой
@@ -73,31 +75,55 @@ def save1():
     var_name_org = txt_name_org.get()
     var_email = txt_email.get()
     var_telephone = txt_telephone.get()
-    var_contacr_org = contacts_org(var_name_org,var_email,var_telephone)
+    var_contact_org = contacts_org(var_name_org,var_email,var_telephone)
     var_guest_address = txt_guest_address.get()
     var_id_guest = txt_id_guest.get()
     var_pass_guest = txt_pass_guest.get()
     var_link_guest = txt_link_guest.get()
-    var_connect_guest = connect_change(var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
     var_vcs_system = cb_vcs_system.get()
+    var_connect_guest = connect_change(var_vcs_system,var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
     var_ip_conf = txt_ip_conf.get()
     var_id_conf = txt_id_conf.get()
     var_pass_conf = txt_pass_conf.get()
     var_link_conf = txt_link_conf.get()
-    var_connect_conf = connect_change(var_ip_conf,var_id_conf,var_pass_conf,var_link_conf)
+    var_connect_conf = connect_change(var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf)
     var_meet_room = txt_meet_room.get()
     var_content = cb_content.get()
     var_time = hour_minute(var_hour, var_minute)
 
     result1 =(f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
               f'{lbl_project["text"]}: {var_project}\n{lbl_duration["text"]}: {var_duration} ч.\n'
-              f'{lbl_name_org["text"]}: {var_contacr_org}\n'
+              f'{lbl_name_org["text"]}: {var_contact_org}\n'
               f'{lbl_guest_address["text"]}: {var_connect_guest}\n{lbl_vcs_system["text"]}: {var_vcs_system}\n'
               f'{lbl_ip_conf["text"]}: {var_connect_conf}\n'
               f'{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
 
+
     write_meet(result1, var_date, var_topic, var_time)
     mb.showinfo("записалось", result1)
+
+# функиця очистки формы
+def clear_form():
+    txt_date.delete("0", END)
+    txt_hour.delete("0", END)
+    txt_minute.delete("0", END)
+    txt_topic.delete("0", END)
+    txt_project.delete("0", END)
+    txt_duration.delete("0", END)
+    txt_name_org.delete("0", END)
+    txt_email.delete("0", END)
+    txt_telephone.delete("0", END)
+    txt_guest_address.delete("0", END)
+    txt_id_guest.delete("0", END)
+    txt_pass_guest.delete("0", END)
+    txt_link_guest.delete("0", END)
+    cb_vcs_system.delete("0", END)
+    txt_ip_conf.delete("0", END)
+    txt_id_conf.delete("0", END)
+    txt_pass_conf.delete("0", END)
+    txt_link_conf.delete("0", END)
+    txt_meet_room.delete("0", END)
+    cb_content.delete("0", END)
 
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
 lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -139,7 +165,7 @@ lbl_telephone.grid(column=2, row=5, ipadx=5, ipady=5, padx=3, pady=3)
 txt_telephone = Entry(window, width=30, textvariable=var_telephone)
 txt_telephone.grid(column=2, row=6, ipadx=5, ipady=5, padx=3, pady=3)
 
-lbl_guest_address = Label(window, text="6. Гостевое подключение IP", relief=GROOVE)
+lbl_guest_address = Label(window, text="6. Гостевое подключение", relief=GROOVE)
 lbl_guest_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_guest_address = Entry(window, width=30, textvariable=var_guest_address)
 txt_guest_address.grid(column=0, row=8, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
@@ -159,13 +185,12 @@ lbl_link_guest.grid(column=0, row=9, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
 txt_link_guest = Entry(window, width=50, textvariable=var_link_guest)
 txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
 
-
 lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
 lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_vcs_system = Combobox(window, values=['YMS','ZOOM'], width=5)
+cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS','ZOOM','SKYPE','MS Teams'], width=5)
 cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
-'''сделать подстановку из выбора уже готовых шаблонов'''
+'''сделать подстановку из выбора уже готовых шаблонов через условиче "Если YMS" '''
 
 lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
 lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -199,6 +224,8 @@ cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
+btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 
 
 window.event_add('<<Paste>>', '<Control-igrave>')
