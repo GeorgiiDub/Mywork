@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
 from tkinter.ttk import Combobox
+import smtplib
+from email.mime.text import MIMEText
 
 window = Tk()
 window.title("My Work")
@@ -29,12 +31,11 @@ var_link_conf = StringVar()
 var_zoom = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
+var_result1 = str("")
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
-
-'''Сделать функцию отправки на электронную почту'''
 
 # функция данные организатора в одну строку
 def contacts_org(a,b,c):
@@ -43,7 +44,7 @@ def contacts_org(a,b,c):
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP
 def connect_change(a,b,c,d,e):
-    var_z = 0
+    c = c.replace(" ", "")
     if a == 'ZOOM':
         var_z = str('SIP: '+c+'@zoomcrc.com')
     else:
@@ -90,8 +91,9 @@ def save1():
     var_meet_room = txt_meet_room.get()
     var_content = cb_content.get()
     var_time = hour_minute(var_hour, var_minute)
+    global var_result1
 
-    result1 =(f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
+    var_result1 =str (f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
               f'{lbl_project["text"]}: {var_project}\n{lbl_duration["text"]}: {var_duration} ч.\n'
               f'{lbl_name_org["text"]}: {var_contact_org}\n'
               f'{lbl_guest_address["text"]}: {var_connect_guest}\n{lbl_vcs_system["text"]}: {var_vcs_system}\n'
@@ -99,8 +101,18 @@ def save1():
               f'{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
 
 
-    write_meet(result1, var_date, var_topic, var_time)
-    mb.showinfo("записалось", result1)
+    write_meet(var_result1, var_date, var_topic, var_time)
+    mb.showinfo("записалось", var_result1)
+
+#функция отправки на электронную почту
+def send_meet():
+    global var_result1
+    smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
+    smtpObj.starttls()
+    smtpObj.login('', '')
+    msg_send = MIMEText(var_result1, 'plain', 'utf-8')
+    smtpObj.sendmail(" ", "", msg_send.as_string())
+    smtpObj.quit()
 
 # функиця очистки формы
 def clear_form():
@@ -224,9 +236,11 @@ cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+
 btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
 btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
-
+btn_clear = Button(window, text="Отправить на email", bg="#abd9ff", command=send_meet)
+btn_clear.grid(column=2, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
