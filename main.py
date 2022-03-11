@@ -37,6 +37,9 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
+'''сделать отправку организатору ссылку для подключения компании, а для админа полную мнформацию и текстовую и файл txt
+поправить текст в отпарвляемом совещании 3 пункт в одну строчку со вторым надо сновой строки'''
+
 # функция данные организатора в одну строку
 def contacts_org(a,b,c):
     var_contacr_org = str(a+'\tэл.почта: '+b+'\tтелефон: '+c)
@@ -111,7 +114,7 @@ def send_meet():
     smtpObj.starttls()
     smtpObj.login('', '')
     msg_send = MIMEText(var_result1, 'plain', 'utf-8')
-    smtpObj.sendmail(" ", "", msg_send.as_string())
+    smtpObj.sendmail("", "", msg_send.as_string())
     smtpObj.quit()
 
 # функиця очистки формы
