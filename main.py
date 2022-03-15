@@ -32,13 +32,14 @@ var_zoom = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
 var_result1 = str("")
+var_answer_org = ""
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
-'''сделать отправку организатору ссылку для подключения компании, а для админа полную мнформацию и текстовую и файл txt
-поправить текст в отпарвляемом совещании 3 пункт в одну строчку со вторым надо сновой строки'''
+'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл
+переформировать результирующую строку для админа в фаил как и ответ организатору'''
 
 # функция данные организатора в одну строку
 def contacts_org(a,b,c):
@@ -47,13 +48,16 @@ def contacts_org(a,b,c):
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP
 def connect_change(a,b,c,d,e):
+    var_connect = str("")
     c = c.replace(" ", "")
     if a == 'ZOOM':
         var_z = str('SIP: '+c+'@zoomcrc.com')
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\t' + var_z)
+        return var_connect
     else:
         var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
-    var_connect=str('\n\tIP адрес: '+b+'\tИдентификатор: '+c+'\tПароль: '+d+'\n\tСсылка на подключение:\n\t'+e+'\n\t'+var_z)
-    return var_connect
+        var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
+        return var_connect
 
 # функция вывода часы-минуты одной строкой
 def hour_minute(x, y):
@@ -73,6 +77,7 @@ def save1():
     var_date=var_date.strftime('%d.%m.%Y')
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
+    var_time = hour_minute(var_hour, var_minute)
     var_topic = txt_topic.get()
     var_project = txt_project.get()
     var_duration = txt_duration.get()
@@ -93,7 +98,7 @@ def save1():
     var_connect_conf = connect_change(var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf)
     var_meet_room = txt_meet_room.get()
     var_content = cb_content.get()
-    var_time = hour_minute(var_hour, var_minute)
+
     global var_result1
 
     var_result1 =str (f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
@@ -102,12 +107,30 @@ def save1():
               f'{lbl_guest_address["text"]}: {var_connect_guest}\n{lbl_vcs_system["text"]}: {var_vcs_system}\n'
               f'{lbl_ip_conf["text"]}: {var_connect_conf}\n'
               f'{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
+    global var_answer_org
 
+    var_answer_org = str (f'Дата и время совещания: {var_date} {var_time}\n'
+                          f'Тема совещания: {var_topic}\n'
+                          f'Система ВКС: {var_vcs_system}\n'
+                          f'Подключение участников компании: {var_connect_conf}\n')
 
     write_meet(var_result1, var_date, var_topic, var_time)
     mb.showinfo("записалось", var_result1)
 
-#функция отправки на электронную почту
+
+# функция отправки ответа организатору
+def send_answer_org():
+    global var_answer_org
+    var_email = txt_email.get()
+    smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
+    smtpObj.starttls()
+    smtpObj.login('', '')
+    msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
+    smtpObj.sendmail("", var_email, msg_send.as_string())
+    smtpObj.quit()
+    mb.showinfo("Ответ", var_answer_org)
+
+# функция отправки на электронную почту админу
 def send_meet():
     global var_result1
     smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
@@ -139,6 +162,7 @@ def clear_form():
     txt_link_conf.delete("0", END)
     txt_meet_room.delete("0", END)
     cb_content.delete("0", END)
+
 
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
 lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -242,8 +266,10 @@ btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 
 btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
 btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
-btn_clear = Button(window, text="Отправить на email", bg="#abd9ff", command=send_meet)
+btn_clear = Button(window, text="Отправить email админу", bg="#abd9ff", command=send_meet)
 btn_clear.grid(column=2, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+btn_clear = Button(window, text="Отправить ответ организатору", bg="#abd9ff", command=send_answer_org)
+btn_clear.grid(column=3, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
