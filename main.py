@@ -32,18 +32,17 @@ var_zoom = StringVar()
 var_meet_room = StringVar()
 var_content = StringVar()
 var_result1 = str("")
-var_answer_org = ""
+var_answer_org = str("")
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
-'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл
-переформировать результирующую строку для админа в фаил как и ответ организатору'''
+'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл'''
 
-# функция данные организатора в одну строку
+# функция данные организатора одним блоком
 def contacts_org(a,b,c):
-    var_contacr_org = str(a+'\tэл.почта: '+b+'\tтелефон: '+c)
+    var_contacr_org = str(a+'\n\tэл.почта: '+b+'\n\tтелефон: '+c)
     return var_contacr_org
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP
@@ -100,15 +99,18 @@ def save1():
     var_content = cb_content.get()
 
     global var_result1
+    var_result1 =str (f'Дата и время совещания: {var_date} {var_time}\n'
+                      f'Тема совещания: {var_topic}\n'
+                      f'Проект: {var_project}\n'
+                      f'Продолжительность: {var_duration} ч.\n'
+                      f'Заказчик-организатор: {var_contact_org}\n'
+                      f'Гостевое подключение: {var_connect_guest}\n'
+                      f'Система ВКС: {var_vcs_system}\n'
+                      f'Подключение участников компании: {var_connect_conf}\n'
+                      f'Переговорные комнаты: {var_meet_room}\n'
+                      f'Демонстрация материалов: {var_content}\n')
 
-    var_result1 =str (f'{lbl_date["text"]}: {var_date} {var_time}\n{lbl_topic["text"]}: {var_topic}\n'
-              f'{lbl_project["text"]}: {var_project}\n{lbl_duration["text"]}: {var_duration} ч.\n'
-              f'{lbl_name_org["text"]}: {var_contact_org}\n'
-              f'{lbl_guest_address["text"]}: {var_connect_guest}\n{lbl_vcs_system["text"]}: {var_vcs_system}\n'
-              f'{lbl_ip_conf["text"]}: {var_connect_conf}\n'
-              f'{lbl_meet_room["text"]}: {var_meet_room}\n{lbl_content["text"]}: {var_content}\n')
     global var_answer_org
-
     var_answer_org = str (f'Дата и время совещания: {var_date} {var_time}\n'
                           f'Тема совещания: {var_topic}\n'
                           f'Система ВКС: {var_vcs_system}\n'
@@ -122,7 +124,7 @@ def save1():
 def send_answer_org():
     global var_answer_org
     var_email = txt_email.get()
-    smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
+    smtpObj = smtplib.SMTP('', 587)
     smtpObj.starttls()
     smtpObj.login('', '')
     msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
