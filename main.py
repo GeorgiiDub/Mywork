@@ -38,20 +38,24 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
-'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл'''
+'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл
+вынести настрйоки авторизации почты в отдельный файл типа ini, для нормального коммита.
+доработать аудио совещания.
+доработать тему письма - без знаков недопустимых в имени файла'''
 
 # функция данные организатора одним блоком
 def contacts_org(a,b,c):
     var_contacr_org = str(a+'\n\tэл.почта: '+b+'\n\tтелефон: '+c)
     return var_contacr_org
 
+''' сделать так чтобы при выборе zoom адрес протокола 323 подставлялся в админскую строку, а в ответ организатору нет
+так же сделать условие "если нет данных гостевых то и в админскую строку пустые строки не вставлялись'''
 # функция объединения данные подключения конференции и вывод H.323 и SIP
 def connect_change(a,b,c,d,e):
     var_connect = str("")
     c = c.replace(" ", "")
     if a == 'ZOOM':
-        var_z = str('SIP: '+c+'@zoomcrc.com')
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\t' + var_z)
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
         return var_connect
     else:
         var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
@@ -99,16 +103,16 @@ def save1():
     var_content = cb_content.get()
 
     global var_result1
-    var_result1 =str (f'Дата и время совещания: {var_date} {var_time}\n'
-                      f'Тема совещания: {var_topic}\n'
-                      f'Проект: {var_project}\n'
-                      f'Продолжительность: {var_duration} ч.\n'
-                      f'Заказчик-организатор: {var_contact_org}\n'
-                      f'Гостевое подключение: {var_connect_guest}\n'
-                      f'Система ВКС: {var_vcs_system}\n'
-                      f'Подключение участников компании: {var_connect_conf}\n'
-                      f'Переговорные комнаты: {var_meet_room}\n'
-                      f'Демонстрация материалов: {var_content}\n')
+    var_result1 =str (f'Дата и время совещания: {var_date} {var_time}'
+                      f'\nТема совещания: {var_topic}'
+                      f'\nПроект: {var_project}'
+                      f'\nПродолжительность: {var_duration} ч.'
+                      f'\nЗаказчик-организатор: {var_contact_org}'
+                      f'\nГостевое подключение: {var_connect_guest}'
+                      f'\nСистема ВКС: {var_vcs_system}'
+                      f'\nПодключение участников компании: {var_connect_conf}'
+                      f'\nПереговорные комнаты: {var_meet_room}'
+                      f'\nДемонстрация материалов: {var_content}')
 
     global var_answer_org
     var_answer_org = str (f'Дата и время совещания: {var_date} {var_time}\n'
@@ -124,11 +128,11 @@ def save1():
 def send_answer_org():
     global var_answer_org
     var_email = txt_email.get()
-    smtpObj = smtplib.SMTP('', 587)
+    smtpObj = smtplib.SMTP('mail.ioes.ru', 587)
     smtpObj.starttls()
-    smtpObj.login('', '')
+    smtpObj.login('dubininga@ioes.ru', 'Elbdctjnjve[159!')
     msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
-    smtpObj.sendmail("", var_email, msg_send.as_string())
+    smtpObj.sendmail("dubininga@ioes.ru", var_email, msg_send.as_string())
     smtpObj.quit()
     mb.showinfo("Ответ", var_answer_org)
 
@@ -137,9 +141,9 @@ def send_meet():
     global var_result1
     smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
     smtpObj.starttls()
-    smtpObj.login('', '')
+    smtpObj.login('dubinin_ga@mail.ru', 'Lr7cZFexTW7gBvHKZ1eQ')
     msg_send = MIMEText(var_result1, 'plain', 'utf-8')
-    smtpObj.sendmail("", "", msg_send.as_string())
+    smtpObj.sendmail("dubinin_ga@mail.ru", "dubininga@ioes.ru", msg_send.as_string())
     smtpObj.quit()
 
 # функиця очистки формы
@@ -228,7 +232,7 @@ txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspa
 
 lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
 lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS','ZOOM','SKYPE','MS Teams'], width=5)
+cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS','ZOOM','SKYPE','MS Teams','Другая'], width=5)
 cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 '''сделать подстановку из выбора уже готовых шаблонов через условиче "Если YMS" '''
