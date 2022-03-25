@@ -130,9 +130,9 @@ def send_answer_org():
     var_email = txt_email.get()
     smtpObj = smtplib.SMTP('mail.ioes.ru', 587)
     smtpObj.starttls()
-    smtpObj.login('dubininga@ioes.ru', 'Elbdctjnjve[159!')
+    smtpObj.login('', '')
     msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
-    smtpObj.sendmail("dubininga@ioes.ru", var_email, msg_send.as_string())
+    smtpObj.sendmail("", var_email, msg_send.as_string())
     smtpObj.quit()
     mb.showinfo("Ответ", var_answer_org)
 
@@ -141,9 +141,9 @@ def send_meet():
     global var_result1
     smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
     smtpObj.starttls()
-    smtpObj.login('dubinin_ga@mail.ru', 'Lr7cZFexTW7gBvHKZ1eQ')
+    smtpObj.login('', '')
     msg_send = MIMEText(var_result1, 'plain', 'utf-8')
-    smtpObj.sendmail("dubinin_ga@mail.ru", "dubininga@ioes.ru", msg_send.as_string())
+    smtpObj.sendmail("", "", msg_send.as_string())
     smtpObj.quit()
 
 # функиця очистки формы
