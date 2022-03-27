@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 import sys
 import os
 from configparser import ConfigParser
+import re
 
 window = Tk()
 window.title("My Work")
@@ -41,10 +42,8 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
-'''сделать подключение почты по IMAP для сохранения писем в исходящих, обработать сбор ошибок отправки в отдельный файл
-вынести настрйоки авторизации почты в отдельный файл типа ini, для нормального коммита.
-доработать аудио совещания.
-доработать тему письма - без знаков недопустимых в имени файла '''
+'''обработать сбор ошибок отправки в отдельный файл
+доработать аудио совещания'''
 
 # функция данные организатора одним блоком
 def contacts_org(a,b,c):
@@ -71,10 +70,12 @@ def hour_minute(x, y):
     return var_time
 
 # функция записи в файл всего совещания
-def write_meet(x, y, z, a):
-    y=str(y)
-    f = open(y+'_'+a+'_'+z+'_'+'.txt', 'w')
-    f.write(x)
+def write_meet(a, b, c, d):
+    b = str(b)
+    # удаляет все не буквенно-цифровые символы
+    e = re.sub(r'[\W_]+', '_', c)
+    f = open(b+'_'+d+'_'+e+'_'+'.txt', 'w')
+    f.write(a)
     f.close()
 
 # функция результирующей строки
@@ -154,12 +155,26 @@ def send_answer_org():
 
 # функция отправки на электронную почту админу
 def send_meet():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(base_path, "email.ini")
+
+    if os.path.exists(config_path):
+        cfg = ConfigParser()
+        cfg.read(config_path)
+    else:
+        print("Config not found! Exiting!")
+        sys.exit(1)
+    host = cfg.get("smtp", "server")
+    from_addr = cfg.get("smtp", "from_addr")
+    password = cfg.get("smtp", "password")
+    addr_adm = cfg.get("smtp", "addr_adm")
+
     global var_result1
-    smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
+    smtpObj = smtplib.SMTP(host, 587)
     smtpObj.starttls()
-    smtpObj.login('', '')
+    smtpObj.login(from_addr, password)
     msg_send = MIMEText(var_result1, 'plain', 'utf-8')
-    smtpObj.sendmail("", "", msg_send.as_string())
+    smtpObj.sendmail(from_addr, addr_adm, msg_send.as_string())
     smtpObj.quit()
 
 # функиця очистки формы
