@@ -4,6 +4,9 @@ from tkcalendar import DateEntry
 from tkinter.ttk import Combobox
 import smtplib
 from email.mime.text import MIMEText
+import sys
+import os
+from configparser import ConfigParser
 
 window = Tk()
 window.title("My Work")
@@ -126,13 +129,26 @@ def save1():
 
 # функция отправки ответа организатору
 def send_answer_org():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(base_path, "email.ini")
+
+    if os.path.exists(config_path):
+        cfg = ConfigParser()
+        cfg.read(config_path)
+    else:
+        print("Config not found! Exiting!")
+        sys.exit(1)
+    host = cfg.get("smtp", "server")
+    from_addr = cfg.get("smtp", "from_addr")
+    password = cfg.get("smtp", "password")
+
     global var_answer_org
     var_email = txt_email.get()
-    smtpObj = smtplib.SMTP('mail.ioes.ru', 587)
+    smtpObj = smtplib.SMTP(host, 587)
     smtpObj.starttls()
-    smtpObj.login('', '')
+    smtpObj.login(from_addr, password)
     msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
-    smtpObj.sendmail("", var_email, msg_send.as_string())
+    smtpObj.sendmail(from_addr, var_email, msg_send.as_string())
     smtpObj.quit()
     mb.showinfo("Ответ", var_answer_org)
 
