@@ -43,18 +43,15 @@ times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
 '''обработать сбор ошибок отправки в отдельный файл
-доработать аудио совещания'''
+написать проверку заполнения полей и проверки их ввод на правильность'''
 
 # функция данные организатора одним блоком
 def contacts_org(a,b,c):
     var_contacr_org = str(a+'\n\tэл.почта: '+b+'\n\tтелефон: '+c)
     return var_contacr_org
 
-''' сделать так чтобы при выборе zoom адрес протокола 323 подставлялся в админскую строку, а в ответ организатору нет
-так же сделать условие "если нет данных гостевых то и в админскую строку пустые строки не вставлялись'''
 # функция объединения данные подключения конференции и вывод H.323 и SIP
 def connect_change(a,b,c,d,e):
-    var_connect = str("")
     c = c.replace(" ", "")
     if a == 'ZOOM':
         var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
@@ -107,7 +104,8 @@ def save1():
     var_content = cb_content.get()
 
     global var_result1
-    var_result1 =str (f'Дата и время совещания: {var_date} {var_time}'
+    if cb_vcs_system.get() == 'ZOOM':
+        var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
                       f'\nТема совещания: {var_topic}'
                       f'\nПроект: {var_project}'
                       f'\nПродолжительность: {var_duration} ч.'
@@ -115,8 +113,20 @@ def save1():
                       f'\nГостевое подключение: {var_connect_guest}'
                       f'\nСистема ВКС: {var_vcs_system}'
                       f'\nПодключение участников компании: {var_connect_conf}'
+                      f'\n\tПодключение по H.323: 115.114.115.7'
                       f'\nПереговорные комнаты: {var_meet_room}'
                       f'\nДемонстрация материалов: {var_content}')
+    else:
+        var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
+                          f'\nТема совещания: {var_topic}'
+                          f'\nПроект: {var_project}'
+                          f'\nПродолжительность: {var_duration} ч.'
+                          f'\nЗаказчик-организатор: {var_contact_org}'
+                          f'\nГостевое подключение: {var_connect_guest}'
+                          f'\nСистема ВКС: {var_vcs_system}'
+                          f'\nПодключение участников компании: {var_connect_conf}'
+                          f'\nПереговорные комнаты: {var_meet_room}'
+                          f'\nДемонстрация материалов: {var_content}')
 
     global var_answer_org
     var_answer_org = str (f'Дата и время совещания: {var_date} {var_time}\n'
