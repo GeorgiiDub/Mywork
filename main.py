@@ -37,6 +37,7 @@ var_meet_room = StringVar()
 var_content = StringVar()
 var_result1 = str("")
 var_answer_org = str("")
+subject = str("")
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
@@ -68,10 +69,12 @@ def hour_minute(x, y):
 
 # функция записи в файл всего совещания
 def write_meet(a, b, c, d):
+    global subject
     b = str(b)
     # удаляет все не буквенно-цифровые символы
     e = re.sub(r'[\W_]+', '_', c)
-    f = open(b+'_'+d+'_'+e+'_'+'.txt', 'w')
+    subject = str(b+'_'+d+'_'+e)
+    f = open(subject +'.txt', 'w')
     f.write(a)
     f.close()
 
@@ -180,11 +183,15 @@ def send_meet():
     addr_adm = cfg.get("smtp", "addr_adm")
 
     global var_result1
+    global subject
+    charset = 'Content-Type: text/plain; charset=utf-8'
+    mime = 'MIME-Version: 1.0'
+    body = "\r\n".join((f"From: {from_addr}", f"To: {addr_adm}",
+                        f"Subject: {subject}", mime, charset, "", var_result1))
     smtpObj = smtplib.SMTP(host, 587)
     smtpObj.starttls()
     smtpObj.login(from_addr, password)
-    msg_send = MIMEText(var_result1, 'plain', 'utf-8')
-    smtpObj.sendmail(from_addr, addr_adm, msg_send.as_string())
+    smtpObj.sendmail(from_addr, addr_adm, body.encode('utf-8'))
     smtpObj.quit()
 
 # функиця очистки формы
