@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
 from tkinter.ttk import Combobox
-import datetime
 import smtplib
 from email.mime.text import MIMEText
 import sys
@@ -16,7 +15,7 @@ outlook = win32com.client.Dispatch("Outlook.Application")
 window = Tk()
 window.title("My Work")
 window.geometry("1200x650")
-window.iconbitmap('worms.ico')
+# window.iconbitmap('worms.ico')
 
 
 var_date = StringVar()
@@ -47,9 +46,13 @@ subject = str("")
 
 times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
-duration = [x for x in range(1, 5)]
+duration = [x for x in range(00, 180, 30)]
 
-'''обработать сбор ошибок отправки в отдельный файл
+'''
+поработать с объектом добавить вложения в объект "собрание" или найти другой способ формирования такого объекта для всех календарей
+добавить в ответ админу и ответ организатора для быстроты копирования и отпарвки.
+
+обработать сбор ошибок отправки в отдельный файл
 написать проверку заполнения полей и проверки их ввод на правильность
 сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения файла, с условием сохранения фала в папке программы'''
 
@@ -73,17 +76,15 @@ def connect_change(a,b,c,d,e):
 def hour_minute(x, y):      #var_hour, var_minute
     var_time = x + '-' + y
     return var_time
-'''разобраться с датой и временем в один объект сделать и применить везде во всех формах'''
+
 # функция дата+время шаблон "yyyy-MM-dd hh:mm"
 def date_time():    #date_time(var_date, var_hour, var_minute)
     var_date = txt_date.get_date()
     var_date = var_date.strftime('%d.%m.%Y')
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
-    var_datetime=str(var_date+'_'+var_hour+'-'+var_minute)
-    date_time_obj = datetime.datetime.strptime(var_datetime, "%d.%m.%Y %H:%M:%S")
-    #print (type(date_time_obj))
-    return date_time_obj
+    var_datetime=str(var_date+' '+var_hour+':'+var_minute)
+    return var_datetime
 
 # функция записи в файл всего совещания
 def write_meet(a, b, c, d):  #var_result1, var_date, var_topic, var_time
@@ -129,7 +130,7 @@ def save1():
         var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
                       f'\nТема совещания: {var_topic}'
                       f'\nПроект: {var_project}'
-                      f'\nПродолжительность: {var_duration} ч.'
+                      f'\nПродолжительность: {var_duration} мин.'
                       f'\nЗаказчик-организатор: {var_contact_org}'
                       f'\nГостевое подключение: {var_connect_guest}'
                       f'\nСистема ВКС: {var_vcs_system}'
@@ -141,7 +142,7 @@ def save1():
         var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
                           f'\nТема совещания: {var_topic}'
                           f'\nПроект: {var_project}'
-                          f'\nПродолжительность: {var_duration} ч.'
+                          f'\nПродолжительность: {var_duration} мин.'
                           f'\nЗаказчик-организатор: {var_contact_org}'
                           f'\nГостевое подключение: {var_connect_guest}'
                           f'\nСистема ВКС: {var_vcs_system}'
@@ -157,7 +158,6 @@ def save1():
 
     write_meet(var_result1, var_date, var_topic, var_time)
     mb.showinfo("записалось", var_result1)
-
 
 # функция отправки ответа организатору
 def send_answer_org():
@@ -214,18 +214,11 @@ def send_meet():
 
 #функция создания объекта .com тип "собрание" в outlook
 def creat_meeting():
-    var_hour = txt_hour.get()
-    var_minute = txt_minute.get()
-    # var_time = hour_minute(var_hour, var_minute)
-    var_date = txt_date.get_date()
-    # var_date = var_date.strftime('%d.%m.%Y')
-    #var_time = datetime.strptime (var_time, '%hh.%mm')
-    var_datetime = date_time()
     var_topic = txt_topic.get()
     var_meet_room = txt_meet_room.get()
-    #global subject
+    var_datetime = date_time()
+    var_duration = int(txt_duration.get())
     global var_result1
-
     base_path = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_path, "email.ini")
     if os.path.exists(config_path):
@@ -235,39 +228,19 @@ def creat_meeting():
         print("Config not found! Exiting!")
         sys.exit(1)
     addr_adm = cfg.get("smtp", "addr_adm")
-
     appt = outlook.CreateItem(1)
-    appt.Start = var_datetime
+    appt.Start = var_datetime   # '2022-04-19 08:00'
     appt.Subject = var_topic
-    appt.Duration = 60
+    appt.Duration = var_duration
     appt.Location = var_meet_room
     appt.MeetingStatus = 1
     appt.Recipients.Add(addr_adm)
-
-    #appt.Save()
+    # Установите Pattern, чтобы он повторялся каждый день в течение следующих 5 дней
+    # pattern = appt.GetRecurrencePattern()
+    # pattern.RecurrenceType = 0
+    # pattern.Occurrences = "5"
+    # appt.Save()
     appt.Send()
-
-
-# def send_meeting():
-#     var_meeting = creat_meeting()
-#     base_path = os.path.dirname(os.path.abspath(__file__))
-#     config_path = os.path.join(base_path, "email.ini")
-#     if os.path.exists(config_path):
-#         cfg = ConfigParser()
-#         cfg.read(config_path)
-#     else:
-#         print("Config not found! Exiting!")
-#         sys.exit(1)
-#     host = cfg.get("smtp", "server")
-#     from_addr = cfg.get("smtp", "from_addr")
-#     password = cfg.get("smtp", "password")
-#     addr_adm = cfg.get("smtp", "addr_adm")
-#
-#     smtpObj = smtplib.SMTP(host, 587)
-#     smtpObj.starttls()
-#     smtpObj.login(from_addr, password)
-#     smtpObj.sendmail(from_addr, addr_adm, var_meeting)
-#     smtpObj.quit()
 
 # функиця очистки формы
 def clear_form():
