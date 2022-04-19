@@ -2,16 +2,22 @@ from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
 from tkinter.ttk import Combobox
+import datetime
 import smtplib
 from email.mime.text import MIMEText
 import sys
 import os
 from configparser import ConfigParser
 import re
+import win32com.client
+outlook = win32com.client.Dispatch("Outlook.Application")
+
 
 window = Tk()
 window.title("My Work")
-window.geometry("1200x600")
+window.geometry("1200x650")
+window.iconbitmap('worms.ico')
+
 
 var_date = StringVar()
 var_hour = StringVar()
@@ -44,7 +50,8 @@ times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(1, 5)]
 
 '''обработать сбор ошибок отправки в отдельный файл
-написать проверку заполнения полей и проверки их ввод на правильность'''
+написать проверку заполнения полей и проверки их ввод на правильность
+сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения файла, с условием сохранения фала в папке программы'''
 
 # функция данные организатора одним блоком
 def contacts_org(a,b,c):
@@ -63,18 +70,29 @@ def connect_change(a,b,c,d,e):
         return var_connect
 
 # функция вывода часы-минуты одной строкой
-def hour_minute(x, y):
+def hour_minute(x, y):      #var_hour, var_minute
     var_time = x + '-' + y
     return var_time
+'''разобраться с датой и временем в один объект сделать и применить везде во всех формах'''
+# функция дата+время шаблон "yyyy-MM-dd hh:mm"
+def date_time():    #date_time(var_date, var_hour, var_minute)
+    var_date = txt_date.get_date()
+    var_date = var_date.strftime('%d.%m.%Y')
+    var_hour = txt_hour.get()
+    var_minute = txt_minute.get()
+    var_datetime=str(var_date+'_'+var_hour+'-'+var_minute)
+    date_time_obj = datetime.datetime.strptime(var_datetime, "%d.%m.%Y %H:%M:%S")
+    #print (type(date_time_obj))
+    return date_time_obj
 
 # функция записи в файл всего совещания
-def write_meet(a, b, c, d):
+def write_meet(a, b, c, d):  #var_result1, var_date, var_topic, var_time
     global subject
     b = str(b)
     # удаляет все не буквенно-цифровые символы
     e = re.sub(r'[\W_]+', '_', c)
     subject = str(b+'_'+d+'_'+e)
-    f = open(subject +'.txt', 'w')
+    f = open(subject+'.txt', 'w')
     f.write(a)
     f.close()
 
@@ -193,6 +211,63 @@ def send_meet():
     smtpObj.login(from_addr, password)
     smtpObj.sendmail(from_addr, addr_adm, body.encode('utf-8'))
     smtpObj.quit()
+
+#функция создания объекта .com тип "собрание" в outlook
+def creat_meeting():
+    var_hour = txt_hour.get()
+    var_minute = txt_minute.get()
+    # var_time = hour_minute(var_hour, var_minute)
+    var_date = txt_date.get_date()
+    # var_date = var_date.strftime('%d.%m.%Y')
+    #var_time = datetime.strptime (var_time, '%hh.%mm')
+    var_datetime = date_time()
+    var_topic = txt_topic.get()
+    var_meet_room = txt_meet_room.get()
+    #global subject
+    global var_result1
+
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(base_path, "email.ini")
+    if os.path.exists(config_path):
+        cfg = ConfigParser()
+        cfg.read(config_path)
+    else:
+        print("Config not found! Exiting!")
+        sys.exit(1)
+    addr_adm = cfg.get("smtp", "addr_adm")
+
+    appt = outlook.CreateItem(1)
+    appt.Start = var_datetime
+    appt.Subject = var_topic
+    appt.Duration = 60
+    appt.Location = var_meet_room
+    appt.MeetingStatus = 1
+    appt.Recipients.Add(addr_adm)
+
+    #appt.Save()
+    appt.Send()
+
+
+# def send_meeting():
+#     var_meeting = creat_meeting()
+#     base_path = os.path.dirname(os.path.abspath(__file__))
+#     config_path = os.path.join(base_path, "email.ini")
+#     if os.path.exists(config_path):
+#         cfg = ConfigParser()
+#         cfg.read(config_path)
+#     else:
+#         print("Config not found! Exiting!")
+#         sys.exit(1)
+#     host = cfg.get("smtp", "server")
+#     from_addr = cfg.get("smtp", "from_addr")
+#     password = cfg.get("smtp", "password")
+#     addr_adm = cfg.get("smtp", "addr_adm")
+#
+#     smtpObj = smtplib.SMTP(host, 587)
+#     smtpObj.starttls()
+#     smtpObj.login(from_addr, password)
+#     smtpObj.sendmail(from_addr, addr_adm, var_meeting)
+#     smtpObj.quit()
 
 # функиця очистки формы
 def clear_form():
@@ -322,8 +397,11 @@ btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", com
 btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 btn_clear = Button(window, text="Отправить email админу", bg="#abd9ff", command=send_meet)
 btn_clear.grid(column=2, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+btn_clear = Button(window, text="Отправить собрание объект", bg="#abd9ff", command=creat_meeting)
+btn_clear.grid(column=2, row=17, ipadx=5, ipady=5, padx=3, pady=3)
 btn_clear = Button(window, text="Отправить ответ организатору", bg="#abd9ff", command=send_answer_org)
 btn_clear.grid(column=3, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+
 
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
