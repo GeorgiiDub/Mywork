@@ -11,13 +11,12 @@ import re
 import win32com.client
 outlook = win32com.client.Dispatch("Outlook.Application")
 
-
 window = Tk()
 window.title("My Work")
 window.geometry("1200x650")
 # window.iconbitmap('worms.ico')
 
-
+# переменные
 var_date = StringVar()
 var_hour = StringVar()
 var_minute = StringVar()
@@ -52,6 +51,8 @@ duration = [x for x in range(00, 180, 30)]
 поработать с объектом добавить вложения в объект "собрание" или найти другой способ формирования такого объекта для всех календарей
 добавить в ответ админу и ответ организатора для быстроты копирования и отпарвки.
 
+создать отдельным файлом комнаты с сылками и использовать условием выбора идентификатора подстановкой значений в переменные
+
 обработать сбор ошибок отправки в отдельный файл
 написать проверку заполнения полей и проверки их ввод на правильность
 сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения файла, с условием сохранения фала в папке программы'''
@@ -61,8 +62,8 @@ def contacts_org(a,b,c):
     var_contacr_org = str(a+'\n\tэл.почта: '+b+'\n\tтелефон: '+c)
     return var_contacr_org
 
-# функция объединения данные подключения конференции и вывод H.323 и SIP
-def connect_change(a,b,c,d,e):
+# функция объединения данные подключения конференции и вывод H.323 и SIP гостевые
+def connect_change_guest(a,b,c,d,e):
     c = c.replace(" ", "")
     if a == 'ZOOM':
         var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
@@ -72,10 +73,22 @@ def connect_change(a,b,c,d,e):
         var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
         return var_connect
 
-# функция вывода часы-минуты одной строкой
-def hour_minute(x, y):      #var_hour, var_minute
-    var_time = x + '-' + y
-    return var_time
+''' сделать в функции connect_chnge() при выборе зумм адрес IP /Подключение по H.323: 115.114.115.7/  убрать из функции save1'''
+# функция объединения данные подключения конференции и вывод H.323 и SIP участники компании
+def connect_change(a,b,c,d,e):  #var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf
+    c = c.replace(" ", "")
+    if a == 'ZOOM':
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
+        return var_connect
+    elif a == 'YMS':
+        b = 'ip адрес компании'
+        var_z = str('H.323: ' + b + '##' + c + '\n\tSIP: ' + c + '@' + b + '\n')
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\tАдрес: ' + b + '\n\t' + var_z)
+        return var_connect
+    else:
+        var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
+        var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
+        return var_connect
 
 # функция дата+время шаблон "yyyy-MM-dd hh:mm"
 def date_time():    #date_time(var_date, var_hour, var_minute)
@@ -87,23 +100,19 @@ def date_time():    #date_time(var_date, var_hour, var_minute)
     return var_datetime
 
 # функция записи в файл всего совещания
-def write_meet(a, b, c, d):  #var_result1, var_date, var_topic, var_time
+def write_meet(a, b, c):  #var_result1, var_datetime, var_topic
     global subject
-    b = str(b)
     # удаляет все не буквенно-цифровые символы
     e = re.sub(r'[\W_]+', '_', c)
-    subject = str(b+'_'+d+'_'+e)
+    subject = str(b + '_' + '_' + e)
+    subject = subject.replace(":", "-")
     f = open(subject+'.txt', 'w')
     f.write(a)
     f.close()
 
 # функция результирующей строки
 def save1():
-    var_date = txt_date.get_date()
-    var_date=var_date.strftime('%d.%m.%Y')
-    var_hour = txt_hour.get()
-    var_minute = txt_minute.get()
-    var_time = hour_minute(var_hour, var_minute)
+    var_datetime = date_time()
     var_topic = txt_topic.get()
     var_project = txt_project.get()
     var_duration = txt_duration.get()
@@ -116,7 +125,7 @@ def save1():
     var_pass_guest = txt_pass_guest.get()
     var_link_guest = txt_link_guest.get()
     var_vcs_system = cb_vcs_system.get()
-    var_connect_guest = connect_change(var_vcs_system,var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
+    var_connect_guest = connect_change_guest(var_vcs_system,var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
     var_ip_conf = txt_ip_conf.get()
     var_id_conf = txt_id_conf.get()
     var_pass_conf = txt_pass_conf.get()
@@ -127,7 +136,7 @@ def save1():
 
     global var_result1
     if cb_vcs_system.get() == 'ZOOM':
-        var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
+        var_result1 = str (f'Дата и время совещания: {var_datetime}'
                       f'\nТема совещания: {var_topic}'
                       f'\nПроект: {var_project}'
                       f'\nПродолжительность: {var_duration} мин.'
@@ -139,7 +148,7 @@ def save1():
                       f'\nПереговорные комнаты: {var_meet_room}'
                       f'\nДемонстрация материалов: {var_content}')
     else:
-        var_result1 = str (f'Дата и время совещания: {var_date} {var_time}'
+        var_result1 = str (f'Дата и время совещания: {var_datetime}'
                           f'\nТема совещания: {var_topic}'
                           f'\nПроект: {var_project}'
                           f'\nПродолжительность: {var_duration} мин.'
@@ -151,12 +160,12 @@ def save1():
                           f'\nДемонстрация материалов: {var_content}')
 
     global var_answer_org
-    var_answer_org = str (f'Дата и время совещания: {var_date} {var_time}\n'
+    var_answer_org = str (f'Дата и время совещания: {var_datetime}\n'
                           f'Тема совещания: {var_topic}\n'
                           f'Система ВКС: {var_vcs_system}\n'
                           f'Подключение участников компании: {var_connect_conf}\n')
 
-    write_meet(var_result1, var_date, var_topic, var_time)
+    write_meet(var_result1, var_datetime, var_topic)
     mb.showinfo("записалось", var_result1)
 
 # функция отправки ответа организатору
@@ -265,7 +274,7 @@ def clear_form():
     txt_meet_room.delete("0", END)
     cb_content.delete("0", END)
 
-
+# интерфейс
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
 lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
