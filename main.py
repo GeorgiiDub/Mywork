@@ -49,7 +49,6 @@ duration = [x for x in range(00, 180, 30)]
 
 '''
 поработать с объектом добавить вложения в объект "собрание" или найти другой способ формирования такого объекта для всех календарей
-добавить в ответ админу и ответ организатора для быстроты копирования и отпарвки.
 
 создать отдельным файлом комнаты с сылками и использовать условием выбора идентификатора подстановкой значений в переменные
 
@@ -73,17 +72,27 @@ def connect_change_guest(a,b,c,d,e):
         var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
         return var_connect
 
-''' сделать в функции connect_chnge() при выборе зумм адрес IP /Подключение по H.323: 115.114.115.7/  убрать из функции save1'''
 # функция объединения данные подключения конференции и вывод H.323 и SIP участники компании
 def connect_change(a,b,c,d,e):  #var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(base_path, "addr.ini")
+
+    if os.path.exists(config_path):
+        cfg = ConfigParser()
+        cfg.read(config_path)
+    else:
+        print("Config not found! Exiting!")
+        sys.exit(1)
+    addr_zoom = cfg.get("addr_zoom", "server_zoom")
+    addr_yms = cfg.get("addr_yms", "server_yms")
+
     c = c.replace(" ", "")
     if a == 'ZOOM':
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d +'\n\tПодключение по H.323: '+addr_zoom)
         return var_connect
     elif a == 'YMS':
-        b = 'ip адрес компании'
-        var_z = str('H.323: ' + b + '##' + c + '\n\tSIP: ' + c + '@' + b + '\n')
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\tАдрес: ' + b + '\n\t' + var_z)
+        var_z = str('H.323: ' + addr_yms + '##' + c + '\n\tSIP: ' + c + '@' + addr_yms + '\n')
+        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\tАдрес: ' + addr_yms + '\n\t' + var_z)
         return var_connect
     else:
         var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
@@ -134,21 +143,14 @@ def save1():
     var_meet_room = txt_meet_room.get()
     var_content = cb_content.get()
 
+    global var_answer_org
+    var_answer_org = str(f'Дата и время совещания: {var_datetime}\n'
+                         f'Тема совещания: {var_topic}\n'
+                         f'Система ВКС: {var_vcs_system}\n'
+                         f'Подключение участников компании: {var_connect_conf}\n')
+
     global var_result1
-    if cb_vcs_system.get() == 'ZOOM':
-        var_result1 = str (f'Дата и время совещания: {var_datetime}'
-                      f'\nТема совещания: {var_topic}'
-                      f'\nПроект: {var_project}'
-                      f'\nПродолжительность: {var_duration} мин.'
-                      f'\nЗаказчик-организатор: {var_contact_org}'
-                      f'\nГостевое подключение: {var_connect_guest}'
-                      f'\nСистема ВКС: {var_vcs_system}'
-                      f'\nПодключение участников компании: {var_connect_conf}'
-                      f'\n\tПодключение по H.323: 115.114.115.7'
-                      f'\nПереговорные комнаты: {var_meet_room}'
-                      f'\nДемонстрация материалов: {var_content}')
-    else:
-        var_result1 = str (f'Дата и время совещания: {var_datetime}'
+    var_result1 = str(f'Дата и время совещания: {var_datetime}'
                           f'\nТема совещания: {var_topic}'
                           f'\nПроект: {var_project}'
                           f'\nПродолжительность: {var_duration} мин.'
@@ -157,13 +159,8 @@ def save1():
                           f'\nСистема ВКС: {var_vcs_system}'
                           f'\nПодключение участников компании: {var_connect_conf}'
                           f'\nПереговорные комнаты: {var_meet_room}'
-                          f'\nДемонстрация материалов: {var_content}')
-
-    global var_answer_org
-    var_answer_org = str (f'Дата и время совещания: {var_datetime}\n'
-                          f'Тема совещания: {var_topic}\n'
-                          f'Система ВКС: {var_vcs_system}\n'
-                          f'Подключение участников компании: {var_connect_conf}\n')
+                          f'\nДемонстрация материалов: {var_content}'
+                          f'\n\nОтвет организатору:\n{var_answer_org}')
 
     write_meet(var_result1, var_datetime, var_topic)
     mb.showinfo("записалось", var_result1)
