@@ -57,65 +57,79 @@ duration = [x for x in range(00, 180, 30)]
 сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения файла, с условием сохранения фала в папке программы'''
 
 # функция данные организатора одним блоком
-def contacts_org(a,b,c):
-    var_contacr_org = str(a+'\n\tэл.почта: '+b+'\n\tтелефон: '+c)
+def contacts_org():
+    var_name_org = txt_name_org.get()
+    var_email = txt_email.get()
+    var_telephone = txt_telephone.get()
+    var_contacr_org = str(var_name_org + '\n\tэл.почта: ' + var_email + '\n\tтелефон: ' + var_telephone)
     return var_contacr_org
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP гостевые
-def connect_change_guest(a,b,c,d,e):
-    c = c.replace(" ", "")
-    if a == 'ZOOM':
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d)
-        return var_connect
-    else:
-        var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
-        var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
-        return var_connect
+def connect_change_guest():
+    var_guest_address = txt_guest_address.get()
+    var_id_guest = txt_id_guest.get()
+    var_pass_guest = txt_pass_guest.get()
+    var_link_guest = txt_link_guest.get()
+    var_id_guest = var_id_guest.replace(" ", "")
+    var_z = str('H.323: ' + var_guest_address + '##' + var_id_guest + '\n\tSIP: ' + var_id_guest + '@' + var_guest_address + '\n')
+    var_connect = str('\n\tСсылка на подключение:\n\t'\
+                      + var_link_guest + '\n\tИдентификатор: ' + var_id_guest + '\tПароль: ' \
+                      + var_pass_guest + '\n\tАдрес: ' + var_guest_address + '\n\t' + var_z)
+    return var_connect
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP участники компании
-def connect_change(a,b,c,d,e):  #var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf
+def connect_change():
     base_path = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_path, "addr.ini")
-
     if os.path.exists(config_path):
         cfg = ConfigParser()
         cfg.read(config_path)
     else:
         print("Config not found! Exiting!")
         sys.exit(1)
+    var_vcs_system = cb_vcs_system.get()
+    var_ip_conf = txt_ip_conf.get()
+    var_id_conf = txt_id_conf.get()
+    var_pass_conf = txt_pass_conf.get()
+    var_link_conf = txt_link_conf.get()
     addr_zoom = cfg.get("addr_zoom", "server_zoom")
     addr_yms = cfg.get("addr_yms", "server_yms")
-
-    c = c.replace(" ", "")
-    if a == 'ZOOM':
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\n\tПароль: ' + d +'\n\tПодключение по H.323: '+addr_zoom)
+    var_id_conf = var_id_conf.replace(" ", "")
+    if var_vcs_system == 'ZOOM':
+        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
+                          '\n\tИдентификатор: ' + var_id_conf + '\n\tПароль: ' + var_pass_conf + \
+                          '\n\tПодключение по H.323: ' + addr_zoom)
         return var_connect
-    elif a == 'YMS':
-        var_z = str('H.323: ' + addr_yms + '##' + c + '\n\tSIP: ' + c + '@' + addr_yms + '\n')
-        var_connect = str('\n\tСсылка на подключение:\n\t' + e + '\n\tИдентификатор: ' + c + '\tПароль: ' + d + '\n\tАдрес: ' + addr_yms + '\n\t' + var_z)
+    elif var_vcs_system == 'YMS':
+        var_z = str('H.323: ' + addr_yms + '##' + var_id_conf + '\n\tSIP: ' + var_id_conf + '@' + addr_yms + '\n')
+        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
+                          '\n\tИдентификатор: ' + var_id_conf + '\tПароль: ' + var_pass_conf + \
+                          '\n\tАдрес: ' + addr_yms + '\n\t' + var_z)
         return var_connect
     else:
-        var_z = str('H.323: '+b+'##'+c+'\n\tSIP: '+c+'@'+b+'\n')
-        var_connect=str('\n\tСсылка на подключение:\n\t'+e+'\n\tИдентификатор: '+c+'\tПароль: '+d+'\n\tАдрес: '+b+'\n\t'+var_z)
+        var_z = str('H.323: ' + var_ip_conf + '##' + var_id_conf + '\n\tSIP: ' + var_id_conf + '@' + var_ip_conf + '\n')
+        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
+                          '\n\tИдентификатор: ' + var_id_conf + '\tПароль: ' + var_pass_conf + \
+                          '\n\tАдрес: ' + var_ip_conf + '\n\t' + var_z)
         return var_connect
 
 # функция дата+время шаблон "yyyy-MM-dd hh:mm"
-def date_time():    #date_time(var_date, var_hour, var_minute)
+def date_time():  # date_time(var_date, var_hour, var_minute)
     var_date = txt_date.get_date()
     var_date = var_date.strftime('%d.%m.%Y')
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
-    var_datetime=str(var_date+' '+var_hour+':'+var_minute)
+    var_datetime = str(var_date + ' ' + var_hour + ':' + var_minute)
     return var_datetime
 
 # функция записи в файл всего совещания
-def write_meet(a, b, c):  #var_result1, var_datetime, var_topic
+def write_meet(a, b, c):  # var_result1, var_datetime, var_topic
     global subject
     # удаляет все не буквенно-цифровые символы
     e = re.sub(r'[\W_]+', '_', c)
     subject = str(b + '_' + '_' + e)
     subject = subject.replace(":", "-")
-    f = open(subject+'.txt', 'w')
+    f = open(subject + '.txt', 'w')
     f.write(a)
     f.close()
 
@@ -125,43 +139,27 @@ def save1():
     var_topic = txt_topic.get()
     var_project = txt_project.get()
     var_duration = txt_duration.get()
-    var_name_org = txt_name_org.get()
-    var_email = txt_email.get()
-    var_telephone = txt_telephone.get()
-    var_contact_org = contacts_org(var_name_org,var_email,var_telephone)
-    var_guest_address = txt_guest_address.get()
-    var_id_guest = txt_id_guest.get()
-    var_pass_guest = txt_pass_guest.get()
-    var_link_guest = txt_link_guest.get()
-    var_vcs_system = cb_vcs_system.get()
-    var_connect_guest = connect_change_guest(var_vcs_system,var_guest_address,var_id_guest,var_pass_guest,var_link_guest)
-    var_ip_conf = txt_ip_conf.get()
-    var_id_conf = txt_id_conf.get()
-    var_pass_conf = txt_pass_conf.get()
-    var_link_conf = txt_link_conf.get()
-    var_connect_conf = connect_change(var_vcs_system,var_ip_conf,var_id_conf,var_pass_conf,var_link_conf)
+    var_contact_org = contacts_org()
+    var_connect_guest = connect_change_guest()
+    var_connect_conf = connect_change()
     var_meet_room = txt_meet_room.get()
     var_content = cb_content.get()
-
     global var_answer_org
     var_answer_org = str(f'Дата и время совещания: {var_datetime}\n'
                          f'Тема совещания: {var_topic}\n'
                          f'Система ВКС: {var_vcs_system}\n'
                          f'Подключение участников компании: {var_connect_conf}\n')
-
     global var_result1
     var_result1 = str(f'Дата и время совещания: {var_datetime}'
-                          f'\nТема совещания: {var_topic}'
-                          f'\nПроект: {var_project}'
-                          f'\nПродолжительность: {var_duration} мин.'
-                          f'\nЗаказчик-организатор: {var_contact_org}'
-                          f'\nГостевое подключение: {var_connect_guest}'
-                          f'\nСистема ВКС: {var_vcs_system}'
-                          f'\nПодключение участников компании: {var_connect_conf}'
-                          f'\nПереговорные комнаты: {var_meet_room}'
-                          f'\nДемонстрация материалов: {var_content}'
-                          f'\n\nОтвет организатору:\n{var_answer_org}')
-
+                      f'\nТема совещания: {var_topic}'
+                      f'\nПроект: {var_project}'
+                      f'\nПродолжительность: {var_duration} мин.'
+                      f'\nЗаказчик-организатор: {var_contact_org}'
+                      f'\nГостевое подключение: {var_connect_guest}'
+                      f'\nПодключение участников компании: {var_connect_conf}'
+                      f'\nПереговорные комнаты: {var_meet_room}'
+                      f'\nДемонстрация материалов: {var_content}'
+                      f'\n\nОтвет организатору:\n{var_answer_org}')
     write_meet(var_result1, var_datetime, var_topic)
     mb.showinfo("записалось", var_result1)
 
@@ -169,7 +167,6 @@ def save1():
 def send_answer_org():
     base_path = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_path, "email.ini")
-
     if os.path.exists(config_path):
         cfg = ConfigParser()
         cfg.read(config_path)
@@ -179,7 +176,6 @@ def send_answer_org():
     host = cfg.get("smtp", "server")
     from_addr = cfg.get("smtp", "from_addr")
     password = cfg.get("smtp", "password")
-
     global var_answer_org
     var_email = txt_email.get()
     smtpObj = smtplib.SMTP(host, 587)
@@ -194,7 +190,6 @@ def send_answer_org():
 def send_meet():
     base_path = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_path, "email.ini")
-
     if os.path.exists(config_path):
         cfg = ConfigParser()
         cfg.read(config_path)
@@ -205,7 +200,6 @@ def send_meet():
     from_addr = cfg.get("smtp", "from_addr")
     password = cfg.get("smtp", "password")
     addr_adm = cfg.get("smtp", "addr_adm")
-
     global var_result1
     global subject
     charset = 'Content-Type: text/plain; charset=utf-8'
@@ -218,7 +212,7 @@ def send_meet():
     smtpObj.sendmail(from_addr, addr_adm, body.encode('utf-8'))
     smtpObj.quit()
 
-#функция создания объекта .com тип "собрание" в outlook
+# функция создания объекта .com тип "собрание" в outlook
 def creat_meeting():
     var_topic = txt_topic.get()
     var_meet_room = txt_meet_room.get()
@@ -235,7 +229,7 @@ def creat_meeting():
         sys.exit(1)
     addr_adm = cfg.get("smtp", "addr_adm")
     appt = outlook.CreateItem(1)
-    appt.Start = var_datetime   # '2022-04-19 08:00'
+    appt.Start = var_datetime  # '2022-04-19 08:00'
     appt.Subject = var_topic
     appt.Duration = var_duration
     appt.Location = var_meet_room
@@ -334,10 +328,9 @@ txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspa
 
 lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
 lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS','ZOOM','SKYPE','MS Teams','Другая'], width=5)
+cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS', 'ZOOM', 'SKYPE', 'MS Teams', 'Другая'],
+                         width=5)
 cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-'''сделать подстановку из выбора уже готовых шаблонов через условиче "Если YMS" '''
 
 lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
 lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
@@ -366,12 +359,11 @@ txt_meet_room.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, columnspa
 
 lbl_content = Label(window, text="10. Демонстрация материалов", relief=GROOVE)
 lbl_content.grid(column=0, row=15, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_content = Combobox(window, values=['ДА','НЕТ'], width=5)
+cb_content = Combobox(window, values=['ДА', 'НЕТ'], width=5)
 cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
 
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
 btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-
 btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
 btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 btn_clear = Button(window, text="Отправить email админу", bg="#abd9ff", command=send_meet)
@@ -381,8 +373,6 @@ btn_clear.grid(column=2, row=17, ipadx=5, ipady=5, padx=3, pady=3)
 btn_clear = Button(window, text="Отправить ответ организатору", bg="#abd9ff", command=send_answer_org)
 btn_clear.grid(column=3, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 
-
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
 window.mainloop()
-
