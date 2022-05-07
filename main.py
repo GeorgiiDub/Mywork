@@ -279,112 +279,114 @@ def clear_form():
 
 
 # интерфейс
+# lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
+# lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
-lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
-txt_date.grid(column=1, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-txt_hour = Combobox(window, values=times_hour, width=5)
-txt_hour.grid(column=2, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_minute = Combobox(window, values=times_minute, width=5)
-txt_minute.grid(column=3, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-lbl_topic = Label(window, text="2. Тема совещания", relief=GROOVE)
-lbl_topic.grid(column=0, row=2, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_topic = Entry(window, width=30, textvariable=var_topic)
-txt_topic.grid(column=1, row=2, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-lbl_project = Label(window, text="3. Проект", relief=GROOVE)
-lbl_project.grid(column=0, row=3, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_project = Entry(window, width=30, textvariable=var_project)
-txt_project.grid(column=1, row=3, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-lbl_duration = Label(window, text="4. Продолжительность", relief=GROOVE)
-lbl_duration.grid(column=0, row=4, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_duration = Combobox(window, values=duration, width=5)
-txt_duration.grid(column=1, row=4, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-lbl_name_org = Label(window, text="5. Организатор", relief=GROOVE)
-lbl_name_org.grid(column=0, row=5, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-txt_name_org = Entry(window, width=30, textvariable=var_name_org)
-txt_name_org.grid(column=0, row=6, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-
-lbl_email = Label(window, text="Электронная почта", relief=GROOVE)
-lbl_email.grid(column=1, row=5, ipadx=5, ipady=5, padx=3, pady=3)
-txt_email = Entry(window, width=30, textvariable=var_email)
-txt_email.grid(column=1, row=6, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_telephone = Label(window, text="Телефон", relief=GROOVE)
-lbl_telephone.grid(column=2, row=5, ipadx=5, ipady=5, padx=3, pady=3)
-txt_telephone = Entry(window, width=30, textvariable=var_telephone)
-txt_telephone.grid(column=2, row=6, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_guest_address = Label(window, text="6. Гостевое подключение", relief=GROOVE)
-lbl_guest_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_guest_address = Entry(window, width=30, textvariable=var_guest_address)
-txt_guest_address.grid(column=0, row=8, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-
-lbl_id_guest = Label(window, text="Идентификатор", relief=GROOVE)
-lbl_id_guest.grid(column=1, row=7, ipadx=5, ipady=5, padx=3, pady=3)
-txt_id_guest = Entry(window, width=30, textvariable=var_id_guest)
-txt_id_guest.grid(column=1, row=8, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_pass_guest = Label(window, text="Пароль", relief=GROOVE)
-lbl_pass_guest.grid(column=2, row=7, ipadx=5, ipady=5, padx=3, pady=3)
-txt_pass_guest = Entry(window, width=30, textvariable=var_pass_guest)
-txt_pass_guest.grid(column=2, row=8, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_link_guest = Label(window, text="Ссылка подключения", relief=GROOVE)
-lbl_link_guest.grid(column=0, row=9, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-txt_link_guest = Entry(window, width=50, textvariable=var_link_guest)
-txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
-
-lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
-lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS', 'ZOOM', 'SKYPE', 'MS Teams', 'Другая'],
-                         width=5)
-cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
-lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_ip_conf = Entry(window, width=30, textvariable=var_ip_conf)
-txt_ip_conf.grid(column=0, row=12, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-
-lbl_id_conf = Label(window, text="Идентификатор", relief=GROOVE)
-lbl_id_conf.grid(column=1, row=11, ipadx=5, ipady=5, padx=3, pady=3)
-txt_id_conf = Entry(window, width=30, textvariable=var_id_conf)
-txt_id_conf.grid(column=1, row=12, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_pass_conf = Label(window, text="Пароль", relief=GROOVE)
-lbl_pass_conf.grid(column=2, row=11, ipadx=5, ipady=5, padx=3, pady=3)
-txt_pass_conf = Entry(window, width=30, textvariable=var_pass_conf)
-txt_pass_conf.grid(column=2, row=12, ipadx=5, ipady=5, padx=3, pady=3)
-
-lbl_link_conf = Label(window, text="Ссылка подключения", relief=GROOVE)
-lbl_link_conf.grid(column=0, row=13, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-txt_link_conf = Entry(window, width=50, textvariable=var_link_conf)
-txt_link_conf.grid(column=1, row=13, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
-
-lbl_meet_room = Label(window, text="9. Переговорные комнаты", relief=GROOVE)
-lbl_meet_room.grid(column=0, row=14, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-txt_meet_room = Entry(window, width=50, textvariable=var_meet_room)
-txt_meet_room.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
-
-lbl_content = Label(window, text="10. Демонстрация материалов", relief=GROOVE)
-lbl_content.grid(column=0, row=15, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-cb_content = Combobox(window, values=['ДА', 'НЕТ'], width=5)
-cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-
-btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
-btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
-btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
-btn_clear = Button(window, text="Отправить email админу", bg="#abd9ff", command=send_meet)
-btn_clear.grid(column=2, row=16, ipadx=5, ipady=5, padx=3, pady=3)
-btn_clear = Button(window, text="Отправить собрание объект", bg="#abd9ff", command=creat_meeting)
-btn_clear.grid(column=2, row=17, ipadx=5, ipady=5, padx=3, pady=3)
-btn_clear = Button(window, text="Отправить ответ организатору", bg="#abd9ff", command=send_answer_org)
-btn_clear.grid(column=3, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+lbl_date.place(relx=0.005, rely=0.02, )
+# txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
+# txt_date.grid(column=1, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# txt_hour = Combobox(window, values=times_hour, width=5)
+# txt_hour.grid(column=2, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_minute = Combobox(window, values=times_minute, width=5)
+# txt_minute.grid(column=3, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# lbl_topic = Label(window, text="2. Тема совещания", relief=GROOVE)
+# lbl_topic.grid(column=0, row=2, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_topic = Entry(window, width=30, textvariable=var_topic)
+# txt_topic.grid(column=1, row=2, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# lbl_project = Label(window, text="3. Проект", relief=GROOVE)
+# lbl_project.grid(column=0, row=3, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_project = Entry(window, width=30, textvariable=var_project)
+# txt_project.grid(column=1, row=3, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# lbl_duration = Label(window, text="4. Продолжительность", relief=GROOVE)
+# lbl_duration.grid(column=0, row=4, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_duration = Combobox(window, values=duration, width=5)
+# txt_duration.grid(column=1, row=4, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# lbl_name_org = Label(window, text="5. Организатор", relief=GROOVE)
+# lbl_name_org.grid(column=0, row=5, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+# txt_name_org = Entry(window, width=30, textvariable=var_name_org)
+# txt_name_org.grid(column=0, row=6, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+#
+# lbl_email = Label(window, text="Электронная почта", relief=GROOVE)
+# lbl_email.grid(column=1, row=5, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_email = Entry(window, width=30, textvariable=var_email)
+# txt_email.grid(column=1, row=6, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_telephone = Label(window, text="Телефон", relief=GROOVE)
+# lbl_telephone.grid(column=2, row=5, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_telephone = Entry(window, width=30, textvariable=var_telephone)
+# txt_telephone.grid(column=2, row=6, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_guest_address = Label(window, text="6. Гостевое подключение", relief=GROOVE)
+# lbl_guest_address.grid(column=0, row=7, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_guest_address = Entry(window, width=30, textvariable=var_guest_address)
+# txt_guest_address.grid(column=0, row=8, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+#
+# lbl_id_guest = Label(window, text="Идентификатор", relief=GROOVE)
+# lbl_id_guest.grid(column=1, row=7, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_id_guest = Entry(window, width=30, textvariable=var_id_guest)
+# txt_id_guest.grid(column=1, row=8, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_pass_guest = Label(window, text="Пароль", relief=GROOVE)
+# lbl_pass_guest.grid(column=2, row=7, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_pass_guest = Entry(window, width=30, textvariable=var_pass_guest)
+# txt_pass_guest.grid(column=2, row=8, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_link_guest = Label(window, text="Ссылка подключения", relief=GROOVE)
+# lbl_link_guest.grid(column=0, row=9, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+# txt_link_guest = Entry(window, width=50, textvariable=var_link_guest)
+# txt_link_guest.grid(column=1, row=9, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
+#
+# lbl_vcs_system = Label(window, text="7. Система ВКС", relief=GROOVE)
+# lbl_vcs_system.grid(column=0, row=10, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS', 'ZOOM', 'SKYPE', 'MS Teams', 'Другая'],
+#                          width=5)
+# cb_vcs_system.grid(column=1, row=10, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# lbl_ip_conf = Label(window, text="8. Подключение участников компании", relief=GROOVE)
+# lbl_ip_conf.grid(column=0, row=11, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_ip_conf = Entry(window, width=30, textvariable=var_ip_conf)
+# txt_ip_conf.grid(column=0, row=12, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+#
+# lbl_id_conf = Label(window, text="Идентификатор", relief=GROOVE)
+# lbl_id_conf.grid(column=1, row=11, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_id_conf = Entry(window, width=30, textvariable=var_id_conf)
+# txt_id_conf.grid(column=1, row=12, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_pass_conf = Label(window, text="Пароль", relief=GROOVE)
+# lbl_pass_conf.grid(column=2, row=11, ipadx=5, ipady=5, padx=3, pady=3)
+# txt_pass_conf = Entry(window, width=30, textvariable=var_pass_conf)
+# txt_pass_conf.grid(column=2, row=12, ipadx=5, ipady=5, padx=3, pady=3)
+#
+# lbl_link_conf = Label(window, text="Ссылка подключения", relief=GROOVE)
+# lbl_link_conf.grid(column=0, row=13, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+# txt_link_conf = Entry(window, width=50, textvariable=var_link_conf)
+# txt_link_conf.grid(column=1, row=13, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
+#
+# lbl_meet_room = Label(window, text="9. Переговорные комнаты", relief=GROOVE)
+# lbl_meet_room.grid(column=0, row=14, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# txt_meet_room = Entry(window, width=50, textvariable=var_meet_room)
+# txt_meet_room.grid(column=1, row=14, ipadx=5, ipady=5, padx=3, pady=3, columnspan=2, sticky=EW)
+#
+# lbl_content = Label(window, text="10. Демонстрация материалов", relief=GROOVE)
+# lbl_content.grid(column=0, row=15, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# cb_content = Combobox(window, values=['ДА', 'НЕТ'], width=5)
+# cb_content.grid(column=1, row=15, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
+#
+# btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1)
+# btn_write.grid(column=0, row=16, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
+# btn_clear = Button(window, text="Очистить форму", bg="#abd9ff", command=clear_form)
+# btn_clear.grid(column=1, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+# btn_clear = Button(window, text="Отправить email админу", bg="#abd9ff", command=send_meet)
+# btn_clear.grid(column=2, row=16, ipadx=5, ipady=5, padx=3, pady=3)
+# btn_clear = Button(window, text="Отправить собрание объект", bg="#abd9ff", command=creat_meeting)
+# btn_clear.grid(column=2, row=17, ipadx=5, ipady=5, padx=3, pady=3)
+# btn_clear = Button(window, text="Отправить ответ организатору", bg="#abd9ff", command=send_answer_org)
+# btn_clear.grid(column=3, row=16, ipadx=5, ipady=5, padx=3, pady=3)
 
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
