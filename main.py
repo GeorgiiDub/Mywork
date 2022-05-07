@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import *
 from tkinter import messagebox as mb
 from tkcalendar import DateEntry
@@ -14,7 +15,7 @@ outlook = win32com.client.Dispatch("Outlook.Application")
 
 window = Tk()
 window.title("My Work")
-window.geometry("1200x650")
+window.geometry("1300x650")
 
 # переменные
 var_date = StringVar()
@@ -279,37 +280,35 @@ def clear_form():
 
 
 # интерфейс
-# lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
-# lbl_date.grid(column=0, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
-lbl_date.place(relx=0.005, rely=0.02, )
-# txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
-# txt_date.grid(column=1, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-#
-# txt_hour = Combobox(window, values=times_hour, width=5)
-# txt_hour.grid(column=2, row=1, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-# txt_minute = Combobox(window, values=times_minute, width=5)
-# txt_minute.grid(column=3, row=1, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-#
-# lbl_topic = Label(window, text="2. Тема совещания", relief=GROOVE)
-# lbl_topic.grid(column=0, row=2, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-# txt_topic = Entry(window, width=30, textvariable=var_topic)
-# txt_topic.grid(column=1, row=2, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-#
-# lbl_project = Label(window, text="3. Проект", relief=GROOVE)
-# lbl_project.grid(column=0, row=3, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-# txt_project = Entry(window, width=30, textvariable=var_project)
-# txt_project.grid(column=1, row=3, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-#
-# lbl_duration = Label(window, text="4. Продолжительность", relief=GROOVE)
-# lbl_duration.grid(column=0, row=4, ipadx=5, ipady=5, sticky=E, padx=3, pady=3)
-# txt_duration = Combobox(window, values=duration, width=5)
-# txt_duration.grid(column=1, row=4, ipadx=5, ipady=5, sticky=W, padx=3, pady=3)
-#
-# lbl_name_org = Label(window, text="5. Организатор", relief=GROOVE)
-# lbl_name_org.grid(column=0, row=5, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
-# txt_name_org = Entry(window, width=30, textvariable=var_name_org)
-# txt_name_org.grid(column=0, row=6, ipadx=5, ipady=5, padx=3, pady=3, sticky=E)
+lbl_date = Label(window, text="1. Дата и время")
+lbl_date.place(x=0.005, y=0.02)
+txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
+txt_date.place(relx=0.1, rely=0.02)
+
+txt_hour = Combobox(window, values=times_hour, width=5)
+txt_hour.place(relx=0.2, rely=0.02)
+txt_minute = Combobox(window, values=times_minute, width=5)
+txt_minute.place(relx=0.25, rely=0.02)
+
+lbl_topic = Label(window, text="2. Тема совещания")
+lbl_topic.place(relx=0.005, rely=0.05)
+txt_topic = Entry(window, width=30, textvariable=var_topic)
+txt_topic.place(relx=0.1, rely=0.05)
+
+lbl_project = Label(window, text="3. Проект")
+lbl_project.place(relx=0.005, rely=0.1)
+txt_project = Entry(window, width=30, textvariable=var_project)
+txt_project.place(relx=0.1, rely=0.1)
+
+lbl_duration = Label(window, text="4. Продолжительность")
+lbl_duration.place(relx=0.005, rely=0.13)
+txt_duration = Combobox(window, values=duration, width=5)
+txt_duration.place(relx=0.12, rely=0.13)
+
+lbl_name_org = Label(window, text="5. Организатор")
+lbl_name_org.place(relx=0.005, rely=0.17)
+txt_name_org = Entry(window, width=30, textvariable=var_name_org)
+txt_name_org.place(relx=0.1, rely=0.17)
 #
 # lbl_email = Label(window, text="Электронная почта", relief=GROOVE)
 # lbl_email.grid(column=1, row=5, ipadx=5, ipady=5, padx=3, pady=3)
