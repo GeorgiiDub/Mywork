@@ -9,12 +9,12 @@ import os
 from configparser import ConfigParser
 import re
 import win32com.client
+
 outlook = win32com.client.Dispatch("Outlook.Application")
 
 window = Tk()
 window.title("My Work")
 window.geometry("1200x650")
-# window.iconbitmap('worms.ico')
 
 # переменные
 var_date = StringVar()
@@ -47,35 +47,40 @@ times_hour = [x for x in range(24)]
 times_minute = [x for x in range(0, 60, 15)]
 duration = [x for x in range(00, 180, 30)]
 
-'''
-поработать с объектом добавить вложения в объект "собрание" или найти другой способ формирования такого объекта для всех календарей
+'''поработать с объектом добавить вложения в объект "собрание" или найти другой способ формирования такого объекта 
+для всех календарей 
 
-создать отдельным файлом комнаты с сылками и использовать условием выбора идентификатора подстановкой значений в переменные
+создать отдельным файлом комнаты с сылками и использовать условием выбора идентификатора подстановкой значений в 
+переменные 
 
-обработать сбор ошибок отправки в отдельный файл
-написать проверку заполнения полей и проверки их ввод на правильность
-сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения файла, с условием сохранения фала в папке программы'''
+обработать сбор ошибок отправки в отдельный файл написать проверку заполнения полей и проверки их ввод на 
+правильность сделать запуск приложения с сервера, и путь к сетевой папке Z на папку какую-нибудь для сохранения 
+файла, с условием сохранения фала в папке программы '''
+
 
 # функция данные организатора одним блоком
 def contacts_org():
-    var_name_org = txt_name_org.get()
-    var_email = txt_email.get()
-    var_telephone = txt_telephone.get()
-    var_contacr_org = str(var_name_org + '\n\tэл.почта: ' + var_email + '\n\tтелефон: ' + var_telephone)
+    name_org = txt_name_org.get()
+    email = txt_email.get()
+    telephone = txt_telephone.get()
+    var_contacr_org = str(name_org + '\n\tэл.почта: ' + email + '\n\tтелефон: ' + telephone)
     return var_contacr_org
+
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP гостевые
 def connect_change_guest():
-    var_guest_address = txt_guest_address.get()
-    var_id_guest = txt_id_guest.get()
-    var_pass_guest = txt_pass_guest.get()
-    var_link_guest = txt_link_guest.get()
-    var_id_guest = var_id_guest.replace(" ", "")
-    var_z = str('H.323: ' + var_guest_address + '##' + var_id_guest + '\n\tSIP: ' + var_id_guest + '@' + var_guest_address + '\n')
-    var_connect = str('\n\tСсылка на подключение:\n\t'\
-                      + var_link_guest + '\n\tИдентификатор: ' + var_id_guest + '\tПароль: ' \
-                      + var_pass_guest + '\n\tАдрес: ' + var_guest_address + '\n\t' + var_z)
+    guest_address = txt_guest_address.get()
+    id_guest: str = txt_id_guest.get()
+    pass_guest = txt_pass_guest.get()
+    link_guest = txt_link_guest.get()
+    id_guest = id_guest.replace(" ", "")
+    var_z = str(
+        'H.323: ' + guest_address + '##' + id_guest + '\n\tSIP: ' + id_guest + '@' + guest_address + '\n')
+    var_connect = str('\n\tСсылка на подключение:\n\t' \
+                      + link_guest + '\n\tИдентификатор: ' + id_guest + '\tПароль: ' \
+                      + pass_guest + '\n\tАдрес: ' + guest_address + '\n\t' + var_z)
     return var_connect
+
 
 # функция объединения данные подключения конференции и вывод H.323 и SIP участники компании
 def connect_change():
@@ -87,31 +92,32 @@ def connect_change():
     else:
         print("Config not found! Exiting!")
         sys.exit(1)
-    var_vcs_system = cb_vcs_system.get()
-    var_ip_conf = txt_ip_conf.get()
-    var_id_conf = txt_id_conf.get()
-    var_pass_conf = txt_pass_conf.get()
-    var_link_conf = txt_link_conf.get()
+    vcs_system = cb_vcs_system.get()
+    ip_conf = txt_ip_conf.get()
+    id_conf = txt_id_conf.get()
+    pass_conf = txt_pass_conf.get()
+    link_conf = txt_link_conf.get()
     addr_zoom = cfg.get("addr_zoom", "server_zoom")
     addr_yms = cfg.get("addr_yms", "server_yms")
-    var_id_conf = var_id_conf.replace(" ", "")
-    if var_vcs_system == 'ZOOM':
-        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
-                          '\n\tИдентификатор: ' + var_id_conf + '\n\tПароль: ' + var_pass_conf + \
+    id_conf = id_conf.replace(" ", "")
+    if vcs_system == 'ZOOM':
+        var_connect = str('\nСистема ВКС: ' + vcs_system + '\n\tСсылка на подключение:\n\t' + link_conf + \
+                          '\n\tИдентификатор: ' + id_conf + '\n\tПароль: ' + pass_conf + \
                           '\n\tПодключение по H.323: ' + addr_zoom)
         return var_connect
-    elif var_vcs_system == 'YMS':
-        var_z = str('H.323: ' + addr_yms + '##' + var_id_conf + '\n\tSIP: ' + var_id_conf + '@' + addr_yms + '\n')
-        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
-                          '\n\tИдентификатор: ' + var_id_conf + '\tПароль: ' + var_pass_conf + \
+    elif vcs_system == 'YMS':
+        var_z = str('H.323: ' + addr_yms + '##' + id_conf + '\n\tSIP: ' + id_conf + '@' + addr_yms + '\n')
+        var_connect = str('\nСистема ВКС: ' + vcs_system + '\n\tСсылка на подключение:\n\t' + link_conf + \
+                          '\n\tИдентификатор: ' + id_conf + '\tПароль: ' + pass_conf + \
                           '\n\tАдрес: ' + addr_yms + '\n\t' + var_z)
         return var_connect
     else:
-        var_z = str('H.323: ' + var_ip_conf + '##' + var_id_conf + '\n\tSIP: ' + var_id_conf + '@' + var_ip_conf + '\n')
-        var_connect = str('\nСистема ВКС: '+ var_vcs_system + '\n\tСсылка на подключение:\n\t' + var_link_conf +\
-                          '\n\tИдентификатор: ' + var_id_conf + '\tПароль: ' + var_pass_conf + \
-                          '\n\tАдрес: ' + var_ip_conf + '\n\t' + var_z)
+        var_z = str('H.323: ' + ip_conf + '##' + id_conf + '\n\tSIP: ' + id_conf + '@' + ip_conf + '\n')
+        var_connect = str('\nСистема ВКС: ' + vcs_system + '\n\tСсылка на подключение:\n\t' + link_conf + \
+                          '\n\tИдентификатор: ' + id_conf + '\tПароль: ' + pass_conf + \
+                          '\n\tАдрес: ' + ip_conf + '\n\t' + var_z)
         return var_connect
+
 
 # функция дата+время шаблон "yyyy-MM-dd hh:mm"
 def date_time():  # date_time(var_date, var_hour, var_minute)
@@ -121,6 +127,7 @@ def date_time():  # date_time(var_date, var_hour, var_minute)
     var_minute = txt_minute.get()
     var_datetime = str(var_date + ' ' + var_hour + ':' + var_minute)
     return var_datetime
+
 
 # функция записи в файл всего совещания
 def write_meet(a, b, c):  # var_result1, var_datetime, var_topic
@@ -133,35 +140,37 @@ def write_meet(a, b, c):  # var_result1, var_datetime, var_topic
     f.write(a)
     f.close()
 
+
 # функция результирующей строки
 def save1():
     var_datetime = date_time()
-    var_topic = txt_topic.get()
-    var_project = txt_project.get()
-    var_duration = txt_duration.get()
-    var_contact_org = contacts_org()
+    topic = txt_topic.get()
+    project = txt_project.get()
+    duration = txt_duration.get()
+    contact_org = contacts_org()
     var_connect_guest = connect_change_guest()
     var_connect_conf = connect_change()
-    var_meet_room = txt_meet_room.get()
-    var_content = cb_content.get()
+    meet_room = txt_meet_room.get()
+    content = cb_content.get()
     global var_answer_org
     var_answer_org = str(f'Дата и время совещания: {var_datetime}\n'
-                         f'Тема совещания: {var_topic}\n'
+                         f'Тема совещания: {topic}\n'
                          f'Система ВКС: {var_vcs_system}\n'
                          f'Подключение участников компании: {var_connect_conf}\n')
     global var_result1
     var_result1 = str(f'Дата и время совещания: {var_datetime}'
-                      f'\nТема совещания: {var_topic}'
-                      f'\nПроект: {var_project}'
-                      f'\nПродолжительность: {var_duration} мин.'
-                      f'\nЗаказчик-организатор: {var_contact_org}'
+                      f'\nТема совещания: {topic}'
+                      f'\nПроект: {project}'
+                      f'\nПродолжительность: {duration} мин.'
+                      f'\nЗаказчик-организатор: {contact_org}'
                       f'\nГостевое подключение: {var_connect_guest}'
                       f'\nПодключение участников компании: {var_connect_conf}'
-                      f'\nПереговорные комнаты: {var_meet_room}'
-                      f'\nДемонстрация материалов: {var_content}'
+                      f'\nПереговорные комнаты: {meet_room}'
+                      f'\nДемонстрация материалов: {content}'
                       f'\n\nОтвет организатору:\n{var_answer_org}')
-    write_meet(var_result1, var_datetime, var_topic)
+    write_meet(var_result1, var_datetime, topic)
     mb.showinfo("записалось", var_result1)
+
 
 # функция отправки ответа организатору
 def send_answer_org():
@@ -177,14 +186,15 @@ def send_answer_org():
     from_addr = cfg.get("smtp", "from_addr")
     password = cfg.get("smtp", "password")
     global var_answer_org
-    var_email = txt_email.get()
+    email = txt_email.get()
     smtpObj = smtplib.SMTP(host, 587)
     smtpObj.starttls()
     smtpObj.login(from_addr, password)
     msg_send = MIMEText(var_answer_org, 'plain', 'utf-8')
-    smtpObj.sendmail(from_addr, var_email, msg_send.as_string())
+    smtpObj.sendmail(from_addr, email, msg_send.as_string())
     smtpObj.quit()
     mb.showinfo("Ответ", var_answer_org)
+
 
 # функция отправки на электронную почту админу
 def send_meet():
@@ -212,12 +222,13 @@ def send_meet():
     smtpObj.sendmail(from_addr, addr_adm, body.encode('utf-8'))
     smtpObj.quit()
 
+
 # функция создания объекта .com тип "собрание" в outlook
 def creat_meeting():
-    var_topic = txt_topic.get()
-    var_meet_room = txt_meet_room.get()
+    topic = txt_topic.get()
+    meet_room = txt_meet_room.get()
     var_datetime = date_time()
-    var_duration = int(txt_duration.get())
+    duration = int(txt_duration.get())
     global var_result1
     base_path = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_path, "email.ini")
@@ -230,9 +241,9 @@ def creat_meeting():
     addr_adm = cfg.get("smtp", "addr_adm")
     appt = outlook.CreateItem(1)
     appt.Start = var_datetime  # '2022-04-19 08:00'
-    appt.Subject = var_topic
-    appt.Duration = var_duration
-    appt.Location = var_meet_room
+    appt.Subject = topic
+    appt.Duration = duration
+    appt.Location = meet_room
     appt.MeetingStatus = 1
     appt.Recipients.Add(addr_adm)
     # Установите Pattern, чтобы он повторялся каждый день в течение следующих 5 дней
@@ -241,6 +252,7 @@ def creat_meeting():
     # pattern.Occurrences = "5"
     # appt.Save()
     appt.Send()
+
 
 # функиця очистки формы
 def clear_form():
@@ -264,6 +276,7 @@ def clear_form():
     txt_link_conf.delete("0", END)
     txt_meet_room.delete("0", END)
     cb_content.delete("0", END)
+
 
 # интерфейс
 lbl_date = Label(window, text="1. Дата и время", relief=GROOVE)
