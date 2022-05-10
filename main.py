@@ -14,7 +14,7 @@ outlook = win32com.client.Dispatch("Outlook.Application")
 
 window = Tk()
 window.title("My Work")
-window.geometry("520x650")
+window.geometry("520x620")
 window['background']='#477670'
 
 # переменные
@@ -64,7 +64,10 @@ def contacts_org():
     name_org = txt_name_org.get()
     email = txt_email.get()
     telephone = txt_telephone.get()
-    var_contacr_org = str(name_org + '\n\tэл.почта: ' + email + '\n\tтелефон: ' + telephone)
+    if not email:
+        mb.showinfo("Почта организатора", "укажите почту организаторa")
+    else:
+        var_contacr_org = str(name_org + '\n\tэл.почта: ' + email + '\n\tтелефон: ' + telephone)
     return var_contacr_org
 
 
@@ -94,7 +97,7 @@ def connect_change():
         print("Config not found! Exiting!")
         sys.exit(1)
     vcs_system = cb_vcs_system.get()
-    ip_conf = txt_ip_conf.get()
+#   ip_conf = txt_ip_conf.get()
     id_conf = txt_id_conf.get()
     pass_conf = txt_pass_conf.get()
     link_conf = txt_link_conf.get()
@@ -113,20 +116,27 @@ def connect_change():
                           '\n\tАдрес: ' + addr_yms + '\n\t' + var_z)
         return var_connect
     else:
-        var_z = str('H.323: ' + ip_conf + '##' + id_conf + '\n\tSIP: ' + id_conf + '@' + ip_conf + '\n')
+        var_z = str('H.323: ' + vcs_system + '##' + id_conf + '\n\tSIP: ' + id_conf + '@' + vcs_system + '\n')
         var_connect = str('\nСистема ВКС: ' + vcs_system + '\n\tСсылка на подключение:\n\t' + link_conf + \
                           '\n\tИдентификатор: ' + id_conf + '\tПароль: ' + pass_conf + \
-                          '\n\tАдрес: ' + ip_conf + '\n\t' + var_z)
+                          '\n\tАдрес: ' + vcs_system + '\n\t' + var_z)
         return var_connect
+
+# def chek_input(a):
 
 
 # функция дата+время шаблон "yyyy-MM-dd hh:mm"
-def date_time():  # date_time(var_date, var_hour, var_minute)
+def date_time():
     var_date = txt_date.get_date()
     var_date = var_date.strftime('%d.%m.%Y')
     var_hour = txt_hour.get()
     var_minute = txt_minute.get()
-    var_datetime = str(var_date + ' ' + var_hour + ':' + var_minute)
+    if not var_hour:
+        mb.showinfo("Некорректное время", "выберите часы")
+    elif not var_minute:
+        mb.showinfo("Некорректное время", "выберите минуты")
+    else:
+        var_datetime = str(var_date + ' ' + var_hour + ':' + var_minute)
     return var_datetime
 
 
@@ -153,12 +163,17 @@ def save1():
     var_connect_conf = connect_change()
     meet_room = txt_meet_room.get()
     content = cb_content.get()
-    global var_answer_org
-    var_answer_org = str(f'Дата и время совещания: {var_datetime}\n'
+    if not topic:
+        mb.showinfo("Тема", "Напишите тему совещания")
+    elif not duration:
+        mb.showinfo("Продолжительность", "выберите продолжительность совещания")
+    else:
+        global var_answer_org
+        var_answer_org = str(f'Дата и время совещания: {var_datetime}\n'
                          f'Тема совещания: {topic}\n'
                          f'Подключение участников компании: {var_connect_conf}\n')
-    global var_result1
-    var_result1 = str(f'Дата и время совещания: {var_datetime}'
+        global var_result1
+        var_result1 = str(f'Дата и время совещания: {var_datetime}'
                       f'\nТема совещания: {topic}'
                       f'\nПроект: {project}'
                       f'\nПродолжительность: {duration} мин.'
@@ -168,8 +183,8 @@ def save1():
                       f'\nПереговорные комнаты: {meet_room}'
                       f'\nДемонстрация материалов: {content}'
                       f'\n\nОтвет организатору:\n{var_answer_org}')
-    write_meet(var_result1, var_datetime, topic)
-    mb.showinfo("записалось", var_result1)
+        write_meet(var_result1, var_datetime, topic)
+        mb.showinfo("записалось", var_result1)
 
 
 # функция отправки ответа организатору
@@ -270,7 +285,7 @@ def clear_form():
     txt_pass_guest.delete("0", END)
     txt_link_guest.delete("0", END)
     cb_vcs_system.delete("0", END)
-    txt_ip_conf.delete("0", END)
+#   txt_ip_conf.delete("0", END)
     txt_id_conf.delete("0", END)
     txt_pass_conf.delete("0", END)
     txt_link_conf.delete("0", END)
@@ -279,29 +294,29 @@ def clear_form():
 
 
 # интерфейс
-lbl_date = Label(window, text="1. Дата и время", font=("Arial", 12), justify=RIGHT)
+lbl_date = Label(window, text="1. Дата и время", font=("Arial", 12))
 lbl_date.place(x=20, y=20)
 txt_date = DateEntry(window, width=12, textvariable=var_date, date_pattern='dd/mm/yy')
-txt_date.place(x=260, y=20)
+txt_date.place(x=230, y=20)
 txt_hour = Combobox(window, values=times_hour, width=5)
-txt_hour.place(x=380, y=20)
+txt_hour.place(x=334, y=20)
 txt_minute = Combobox(window, values=times_minute, width=5)
-txt_minute.place(x=450, y=20)
+txt_minute.place(x=395, y=20)
 
 lbl_topic = Label(window, text="2. Тема совещания", font=("Arial", 12))
 lbl_topic.place(x=20, y=50)
 txt_topic = Entry(window, textvariable=var_topic)
-txt_topic.place(x=260, y=50, width=240)
+txt_topic.place(x=230, y=50, width=270)
 
 lbl_project = Label(window, text="3. Проект", font=("Arial", 12))
 lbl_project.place(x=20, y=80)
 txt_project = Entry(window, textvariable=var_project)
-txt_project.place(x=260, y=80, width=170,)
+txt_project.place(x=230, y=80, width=156)
 
 lbl_duration = Label(window, text="4. Продолжительность", font=("Arial", 12))
 lbl_duration.place(x=20, y=110)
 txt_duration = Combobox(window, values=duration, width=5)
-txt_duration.place(x=260, y=110)
+txt_duration.place(x=230, y=110)
 
 lbl_name_org = Label(window, text="5. Организатор", font=("Arial", 12))
 lbl_name_org.place(x=20, y=140)
@@ -312,9 +327,9 @@ lbl_email.place(x=230, y=140)
 txt_email = Entry(window, width=27, textvariable=var_email)
 txt_email.place(x=230, y=170)
 lbl_telephone = Label(window, text="Телефон", font=("Arial", 12))
-lbl_telephone.place(x=420, y=140)
+lbl_telephone.place(x=410, y=140)
 txt_telephone = Entry(window, textvariable=var_telephone)
-txt_telephone.place(x=420, y=170, width=80)
+txt_telephone.place(x=410, y=170, width=90)
 
 lbl_guest_address = Label(window, text="6. Гостевое подключение", font=("Arial", 12))
 lbl_guest_address.place(x=20, y=200)
@@ -336,52 +351,46 @@ lbl_link_guest.place(x=40, y=260)
 txt_link_guest = Entry(window, textvariable=var_link_guest)
 txt_link_guest.place(x=40, y=290, width=460)
 
-lbl_vcs_system = Label(window, text="7. Система ВКС", font=("Arial", 12))
-lbl_vcs_system.place(x=20, y=320)
-cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS', 'ZOOM', 'SKYPE', 'MS Teams', 'Другая'],
-                          width=9)
-cb_vcs_system.place(x=260, y=320)
-
-lbl_ip_conf = Label(window, text="8. Подключение компании", font=("Arial", 12))
-lbl_ip_conf.place(x=20, y=360)
-txt_ip_conf = Entry(window, width=28, textvariable=var_ip_conf)
-txt_ip_conf.place(x=40, y=392)
+lbl_ip_conf = Label(window, text="7. Подключение компании", font=("Arial", 12))
+lbl_ip_conf.place(x=20, y=320)
+cb_vcs_system = Combobox(window, textvariable=var_vcs_system, values=['YMS', 'ZOOM', 'SKYPE', 'MS Teams', 'Другая'])
+cb_vcs_system.place(x=40, y=355, width=170)
 
 lbl_id_conf = Label(window, text="Идентификатор", font=("Arial", 12))
-lbl_id_conf.place(x=230, y=360)
+lbl_id_conf.place(x=230, y=320)
 txt_id_conf = Entry(window, textvariable=var_id_conf)
-txt_id_conf.place(x=230, y=392, width=130)
+txt_id_conf.place(x=230, y=355, width=130)
 
 lbl_pass_conf = Label(window, text="Пароль", font=("Arial", 12))
-lbl_pass_conf.place(x=380, y=360)
+lbl_pass_conf.place(x=380, y=320)
 txt_pass_conf = Entry(window, textvariable=var_pass_conf)
-txt_pass_conf.place(x=380, y=392, width=120)
+txt_pass_conf.place(x=380, y=355, width=120)
 
 lbl_link_conf = Label(window, text="Ссылка подключения", font=("Arial", 12))
-lbl_link_conf.place(x=40, y=420)
+lbl_link_conf.place(x=40, y=388)
 txt_link_conf = Entry(window, textvariable=var_link_conf)
-txt_link_conf.place(x=40, y=455, width=460,)
+txt_link_conf.place(x=40, y=422, width=460,)
 
-lbl_meet_room = Label(window, text="9. Переговорные комнаты", font=("Arial", 12))
-lbl_meet_room.place(x=20, y=490)
+lbl_meet_room = Label(window, text="8. Переговорные комнаты", font=("Arial", 12))
+lbl_meet_room.place(x=20, y=450)
 txt_meet_room = Entry(window, textvariable=var_meet_room)
-txt_meet_room.place(x=260, y=490, width=240)
+txt_meet_room.place(x=230, y=450, width=270)
 
-lbl_content = Label(window, text="10. Демонстрация материалов", font=("Arial", 12))
-lbl_content.place(x=20, y=525)
+lbl_content = Label(window, text="9. Демонстрация материалов", font=("Arial", 12))
+lbl_content.place(x=20, y=485)
 cb_content = Combobox(window, values=['ДА', 'НЕТ'], width=5)
-cb_content.place(x=260, y=525)
+cb_content.place(x=260, y=485)
 
 btn_write = Button(window, text="Записать", bg="#abd9ff", command=save1, font=("Arial", 12))
-btn_write.place(x=20, y=570)
+btn_write.place(x=20, y=530)
 btn_clear = Button(window, text="Очистить", bg="#abd9ff", command=clear_form, font=("Arial", 12))
-btn_clear.place(x=20, y=610)
+btn_clear.place(x=20, y=570)
 btn_clear = Button(window, text="Отправить админу", bg="#abd9ff", command=send_meet, font=("Arial", 12))
-btn_clear.place(x=120, y=570)
+btn_clear.place(x=120, y=530)
 btn_clear = Button(window, text="Создать собрание", bg="#abd9ff", command=creat_meeting, font=("Arial", 12))
-btn_clear.place(x=120, y=610)
+btn_clear.place(x=120, y=570)
 btn_clear = Button(window, text="Отправить организатору", bg="#abd9ff", command=send_answer_org, font=("Arial", 12))
-btn_clear.place(x=280, y=570)
+btn_clear.place(x=280, y=530)
 
 window.event_add('<<Paste>>', '<Control-igrave>')
 window.event_add("<<Copy>>", "<Control-ntilde>")
